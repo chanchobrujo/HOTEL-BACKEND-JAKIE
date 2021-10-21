@@ -1,0 +1,12 @@
+server:
+  port: 9095
+
+spring:
+  data:
+    mongodb:
+      auto-index-creation: true
+      database: projecthotel
+
+jwt:
+  secret: secret
+  expiration: 3600

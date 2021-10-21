@@ -1,0 +1,11 @@
+# Prettier configuration
+overrides:
+  - files:
+      - "*.java"
+    options:
+      printWidth: 100
+      tabWidth: 4
+      useTabs: false
+      trailingComma: none
+
+      #npx prettier --write "/*.java". prettier --write "/*.java".
