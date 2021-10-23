@@ -17,11 +17,7 @@ public class DTOToken {
     private UserDetails userDetails;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public DTOToken(
-        String token,
-        UserDetails userDetails,
-        Collection<? extends GrantedAuthority> authorities
-    ) {
+    public DTOToken(String token, UserDetails userDetails, Collection<? extends GrantedAuthority> authorities) {
         this.token = token;
         this.userDetails = userDetails;
         this.authorities = authorities;

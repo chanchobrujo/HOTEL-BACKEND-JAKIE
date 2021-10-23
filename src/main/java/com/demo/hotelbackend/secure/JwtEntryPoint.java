@@ -16,11 +16,8 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
     private static final Logger logger = LoggerFactory.getLogger(JwtEntryPoint.class);
 
     @Override
-    public void commence(
-        HttpServletRequest req,
-        HttpServletResponse res,
-        AuthenticationException e
-    ) throws IOException, ServletException {
+    public void commence(HttpServletRequest req, HttpServletResponse res, AuthenticationException e)
+        throws IOException, ServletException {
         logger.error(e.getMessage());
         res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "no autorizado");
     }

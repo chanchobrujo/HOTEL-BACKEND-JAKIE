@@ -16,12 +16,7 @@ public class userdetailsServiceI implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userprincipal.build(
-            service
-                .findAll()
-                .toStream()
-                .filter(user -> user.getEmail().equalsIgnoreCase(username))
-                .findFirst()
-                .get()
+            service.findAll().toStream().filter(user -> user.getEmail().equalsIgnoreCase(username)).findFirst().get()
         );
     }
 }

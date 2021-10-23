@@ -7,7 +7,7 @@ import com.demo.hotelbackend.constants.enums;
 import com.demo.hotelbackend.data.DTOLogin;
 import com.demo.hotelbackend.data.DTOToken;
 import com.demo.hotelbackend.secure.JwtProvider;
-import java.util.stream.Collectors;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,6 +41,14 @@ public class userService {
         return repository.findAll();
     }
 
+    public Optional<user> findByEmail(String email) {
+        return findAll().toStream().filter(us -> us.getEmail().equals(email)).findFirst();
+    }
+
+    public Optional<String> findByRole(user user, String rol) {
+        return user.getRoles().stream().filter(role -> role.equals(rol)).findFirst();
+    }
+
     public Mono<Response> save(user user) {
         HttpStatus status = HttpStatus.ACCEPTED;
         String message = enums.Messages.CORRECT_DATA;
@@ -50,23 +58,10 @@ public class userService {
         return Mono.just(new Response(message, usersave, status));
     }
 
-    public Mono<Response> login(DTOLogin login) {
-        HttpStatus status = HttpStatus.UNAUTHORIZED;
-        String message = enums.Messages.INVALID_DATA;
-        DTOToken jwtDto = null;
-
-        if (
-            !findAll()
-                .toStream()
-                .filter(u -> u.getEmail().equals(login.getUsername()))
-                .collect(Collectors.toList())
-                .isEmpty()
-        ) {
-            status = HttpStatus.ACCEPTED;
-            message = enums.Messages.VALID_DATA;
-
+    public DTOToken authorization(String email, String password) {
+        try {
             Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword())
+                new UsernamePasswordAuthenticationToken(email, password)
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -74,7 +69,22 @@ public class userService {
             String jwt = jwtProvider.generateToken(authentication);
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-            jwtDto = new DTOToken(jwt, userDetails, userDetails.getAuthorities());
+            return new DTOToken(jwt, userDetails, userDetails.getAuthorities());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Mono<Response> login(DTOLogin login, String prerole) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        String message = enums.Messages.INVALID_DATA; 
+
+        Optional<user> user = findByEmail(login.getUsername());
+        DTOToken jwtDto = authorization(login.getUsername(), login.getPassword());
+
+        if (user.isPresent() && findByRole(user.get(), prerole).isPresent() && jwtDto != null) {
+            status = HttpStatus.ACCEPTED;
+            message = enums.Messages.VALID_DATA; 
         }
 
         return Mono.just(new Response(message, jwtDto, status));
