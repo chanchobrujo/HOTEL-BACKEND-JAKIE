@@ -1,4 +1,4 @@
-package com.demo.hotelbackend.controller;
+package com.demo.hotelbackend.controller.Authorization;
 
 import com.demo.hotelbackend.Services.userService;
 import com.demo.hotelbackend.constants.enums;
@@ -28,8 +28,10 @@ public class AuthController {
         @Valid @RequestBody DTOLogin DTOLogin,
         BindingResult bindinResult
     ) {
+        if (bindinResult.hasErrors()) return service.BindingResultErrors(bindinResult);
+
         return service
-            .login(DTOLogin, enums.ADMIN.name())
+            .login(DTOLogin, enums.ROLE_ADMIN.name())
             .map(
                 mapper -> {
                     return ResponseEntity.status(mapper.getStatus()).body(mapper.getResponse());
@@ -43,8 +45,10 @@ public class AuthController {
         @Valid @RequestBody DTOLogin DTOLogin,
         BindingResult bindinResult
     ) {
+        if (bindinResult.hasErrors()) return service.BindingResultErrors(bindinResult);
+
         return service
-            .login(DTOLogin, enums.CUSTOMER.name())
+            .login(DTOLogin, enums.ROLE_HUESPED.name())
             .map(
                 mapper -> {
                     return ResponseEntity.status(mapper.getStatus()).body(mapper.getResponse());

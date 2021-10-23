@@ -1,6 +1,6 @@
 package com.demo.hotelbackend.Interface;
 
-import com.demo.hotelbackend.Model.user;
+import com.demo.hotelbackend.Model.Collections.user;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Mono;
 

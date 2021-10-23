@@ -1,5 +1,6 @@
 package com.demo.hotelbackend.Model;
 
+import com.demo.hotelbackend.Model.Collections.user;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,8 +1,9 @@
 package com.demo.hotelbackend.constants;
 
 public enum enums {
-    ADMIN,
-    CUSTOMER;
+    ROLE_ADMIN,
+    ROLE_RECP,
+    ROLE_HUESPED;
 
     public static class Messages {
 

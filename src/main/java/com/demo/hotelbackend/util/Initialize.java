@@ -1,11 +1,12 @@
 package com.demo.hotelbackend.util;
 
-import com.demo.hotelbackend.Model.user;
+import com.demo.hotelbackend.Model.Collections.TypeRoom;
+import com.demo.hotelbackend.Model.Collections.user;
+import com.demo.hotelbackend.Services.typeRoomService;
 import com.demo.hotelbackend.Services.userService;
 import com.demo.hotelbackend.constants.enums;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,26 +16,36 @@ import org.springframework.stereotype.Component;
 public class Initialize implements CommandLineRunner {
 
     @Autowired
-    userService service;
+    private userService userService;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private typeRoomService typeRoomService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
-        if (service.findAll().toStream().collect(Collectors.toList()).isEmpty()) {
+        if (typeRoomService.findAll().toStream().count() == 0) {
+            typeRoomService.save(new TypeRoom("DOBLE"));
+            typeRoomService.save(new TypeRoom("SIMPLE"));
+            typeRoomService.save(new TypeRoom("FAMILIAR"));
+            typeRoomService.save(new TypeRoom("MATRIMONIAL"));
+        }
+
+        if (userService.findAll().toStream().count() == 0) {
             Set<String> roles = new HashSet<>();
-            roles.add(enums.ADMIN.name());
+            roles.add(enums.ROLE_ADMIN.name());
 
             user useradmin = new user(
-                "KEVIN ANDERSON",
-                "PALMA LLUÉN",
-                "947275237",
-                "umb.kevsidorov@gmail.com",
+                "Jackeline",
+                "Picoy Rosas",
+                "941472816",
+                "Jpicoyrosas@gmail.com",
                 passwordEncoder.encode("123456"),
                 roles
             );
-            service.save(useradmin);
+            userService.save(useradmin);
         }
     }
 }

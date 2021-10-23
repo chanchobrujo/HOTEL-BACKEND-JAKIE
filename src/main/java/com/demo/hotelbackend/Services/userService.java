@@ -1,15 +1,17 @@
 package com.demo.hotelbackend.Services;
 
 import com.demo.hotelbackend.Interface.userRepository;
+import com.demo.hotelbackend.Model.Collections.user;
 import com.demo.hotelbackend.Model.Response;
-import com.demo.hotelbackend.Model.user;
 import com.demo.hotelbackend.constants.enums;
 import com.demo.hotelbackend.data.DTOLogin;
 import com.demo.hotelbackend.data.DTOToken;
 import com.demo.hotelbackend.secure.JwtProvider;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -31,8 +34,8 @@ public class userService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    //@Autowired
-    //private PasswordEncoder passwordEncoder;
+    // @Autowired
+    // private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JwtProvider jwtProvider;
@@ -47,6 +50,16 @@ public class userService {
 
     public Optional<String> findByRole(user user, String rol) {
         return user.getRoles().stream().filter(role -> role.equals(rol)).findFirst();
+    }
+
+    public Mono<ResponseEntity<Map<String, Object>>> BindingResultErrors(BindingResult bindinResult) {
+        Response response = new Response(
+            bindinResult.getAllErrors().stream().findFirst().get().getDefaultMessage().toString(),
+            null,
+            HttpStatus.NOT_ACCEPTABLE
+        );
+
+        return Mono.just(ResponseEntity.internalServerError().body(response.getResponse()));
     }
 
     public Mono<Response> save(user user) {
@@ -77,14 +90,14 @@ public class userService {
 
     public Mono<Response> login(DTOLogin login, String prerole) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
-        String message = enums.Messages.INVALID_DATA; 
+        String message = enums.Messages.INVALID_DATA;
 
         Optional<user> user = findByEmail(login.getUsername());
         DTOToken jwtDto = authorization(login.getUsername(), login.getPassword());
 
         if (user.isPresent() && findByRole(user.get(), prerole).isPresent() && jwtDto != null) {
             status = HttpStatus.ACCEPTED;
-            message = enums.Messages.VALID_DATA; 
+            message = enums.Messages.VALID_DATA;
         }
 
         return Mono.just(new Response(message, jwtDto, status));
