@@ -43,62 +43,42 @@ public class RoomController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RECP') or hasRole('ROLE_HUESPED')")
     @GetMapping("/{idroomm}")
     public Mono<ResponseEntity<Room>> findById(@PathVariable("idroomm") String idroomm) {
-        return service
-            .findByIdroomm(idroomm)
-            .map(mapper -> ResponseEntity.ok().body(mapper))
-            .defaultIfEmpty(ResponseEntity.notFound().build());
+        return service.findByIdroomm(idroomm).map(mapper -> ResponseEntity.ok().body(mapper))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RECP') or hasRole('ROLE_HUESPED')")
     @GetMapping("/{name}")
     public Mono<ResponseEntity<Room>> findByName(@PathVariable("name") String name) {
-        return service
-            .findByName(name)
-            .map(mapper -> ResponseEntity.ok().body(mapper))
-            .defaultIfEmpty(ResponseEntity.notFound().build());
+        return service.findByName(name).map(mapper -> ResponseEntity.ok().body(mapper))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/save")
-    public Mono<ResponseEntity<Map<String, Object>>> save(
-        @RequestBody @Valid DTORoom DTORoom,
-        BindingResult bindinResult
-    ) {
-        if (bindinResult.hasErrors()) return service.BindingResultErrors(bindinResult);
+    public Mono<ResponseEntity<Map<String, Object>>> save(@RequestBody @Valid DTORoom DTORoom,
+            BindingResult bindinResult) {
+        if (bindinResult.hasErrors())
+            return service.BindingResultErrors(bindinResult);
 
-        return service
-            .save(DTORoom)
-            .map(
-                response -> {
-                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
-                }
-            )
-            .defaultIfEmpty(ResponseEntity.internalServerError().build());
+        return service.save(DTORoom).map(response -> {
+            return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+        }).defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/deleteById/{idroomm}")
     public Mono<ResponseEntity<Map<String, Object>>> daleteById(@PathVariable("idroomm") String idroomm) {
-        return service
-            .delete(idroomm)
-            .map(
-                response -> {
-                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
-                }
-            )
-            .defaultIfEmpty(ResponseEntity.internalServerError().build());
+        return service.delete(idroomm).map(response -> {
+            return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+        }).defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/chancgeState/{idroomm}")
+    @PostMapping("/changeState/{idroomm}")
     public Mono<ResponseEntity<Map<String, Object>>> changeState(@PathVariable("idroomm") String idroomm) {
-        return service
-            .changeState(idroomm)
-            .map(
-                response -> {
-                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
-                }
-            )
-            .defaultIfEmpty(ResponseEntity.internalServerError().build());
+        return service.changeState(idroomm).map(response -> {
+            return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+        }).defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 }
