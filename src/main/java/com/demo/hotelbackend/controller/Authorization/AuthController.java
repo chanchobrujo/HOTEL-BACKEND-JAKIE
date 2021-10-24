@@ -1,7 +1,6 @@
 package com.demo.hotelbackend.controller.Authorization;
 
 import com.demo.hotelbackend.Services.userService;
-import com.demo.hotelbackend.constants.enums;
 import com.demo.hotelbackend.data.DTOLogin;
 import java.util.Map;
 import javax.validation.Valid;
@@ -23,7 +22,7 @@ public class AuthController {
     @Autowired
     private userService service;
 
-    @PostMapping("/singin/user")
+    @PostMapping("/singin")
     public Mono<ResponseEntity<Map<String, Object>>> singinUser(
         @Valid @RequestBody DTOLogin DTOLogin,
         BindingResult bindinResult
@@ -31,24 +30,7 @@ public class AuthController {
         if (bindinResult.hasErrors()) return service.BindingResultErrors(bindinResult);
 
         return service
-            .login(DTOLogin, enums.ROLE_ADMIN.name())
-            .map(
-                mapper -> {
-                    return ResponseEntity.status(mapper.getStatus()).body(mapper.getResponse());
-                }
-            )
-            .defaultIfEmpty(ResponseEntity.internalServerError().build());
-    }
-
-    @PostMapping("/singin/client")
-    public Mono<ResponseEntity<Map<String, Object>>> singinClient(
-        @Valid @RequestBody DTOLogin DTOLogin,
-        BindingResult bindinResult
-    ) {
-        if (bindinResult.hasErrors()) return service.BindingResultErrors(bindinResult);
-
-        return service
-            .login(DTOLogin, enums.ROLE_HUESPED.name())
+            .login(DTOLogin)
             .map(
                 mapper -> {
                     return ResponseEntity.status(mapper.getStatus()).body(mapper.getResponse());

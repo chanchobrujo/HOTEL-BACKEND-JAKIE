@@ -45,6 +45,7 @@ public class Initialize implements CommandLineRunner {
                 passwordEncoder.encode("123456"),
                 roles
             );
+            useradmin.setState(true);
             userService.save(useradmin);
         }
     }

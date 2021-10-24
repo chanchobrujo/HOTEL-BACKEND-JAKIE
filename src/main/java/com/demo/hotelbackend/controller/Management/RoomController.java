@@ -57,7 +57,7 @@ public class RoomController {
             .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RECP') or hasRole('ROLE_HUESPED')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/save")
     public Mono<ResponseEntity<Map<String, Object>>> save(
         @RequestBody @Valid DTORoom DTORoom,

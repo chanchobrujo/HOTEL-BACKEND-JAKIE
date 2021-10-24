@@ -44,12 +44,8 @@ public class userService {
         return repository.findAll();
     }
 
-    public Optional<user> findByEmail(String email) {
-        return findAll().toStream().filter(us -> us.getEmail().equals(email)).findFirst();
-    }
-
-    public Optional<String> findByRole(user user, String rol) {
-        return user.getRoles().stream().filter(role -> role.equals(rol)).findFirst();
+    public Mono<user> findByEmail(String email) {
+        return repository.findByEmail(email);
     }
 
     public Mono<ResponseEntity<Map<String, Object>>> BindingResultErrors(BindingResult bindinResult) {
@@ -88,14 +84,17 @@ public class userService {
         }
     }
 
-    public Mono<Response> login(DTOLogin login, String prerole) {
+    public Mono<Response> login(DTOLogin login) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         String message = enums.Messages.INVALID_DATA;
 
-        Optional<user> user = findByEmail(login.getUsername());
+        Optional<user> user = findAll()
+            .toStream()
+            .filter(use -> use.getEmail().equals(login.getUsername()))
+            .findFirst();
         DTOToken jwtDto = authorization(login.getUsername(), login.getPassword());
 
-        if (user.isPresent() && findByRole(user.get(), prerole).isPresent() && jwtDto != null) {
+        if (user.isPresent() && jwtDto != null) {
             status = HttpStatus.ACCEPTED;
             message = enums.Messages.VALID_DATA;
         }
