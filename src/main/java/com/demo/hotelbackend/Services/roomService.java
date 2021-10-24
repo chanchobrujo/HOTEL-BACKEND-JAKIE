@@ -54,16 +54,63 @@ public class roomService {
         HttpStatus status = HttpStatus.NOT_FOUND;
         String message = enums.Messages.INCORRECT_DATA;
         Room room = null;
+        if (DTORoom.getIdroom() == null) DTORoom.setIdroom("");
 
         if (typeRoomRepository.existsById(DTORoom.getIdtype()).block()) {
+            if (findAll().toStream().filter(u -> u.getName().equals(DTORoom.getName())).count() == 0) {
+                if (!roomrepository.existsById(DTORoom.getIdroom()).block()) {
+                    room =
+                        new Room(DTORoom.getName(), DTORoom.getDescription(), DTORoom.getIdtype(), DTORoom.getPrice());
+                } else {
+                    room =
+                        new Room(
+                            DTORoom.getIdroom(),
+                            DTORoom.getName(),
+                            DTORoom.getDescription(),
+                            DTORoom.getIdtype(),
+                            DTORoom.getPrice()
+                        );
+                }
+                status = HttpStatus.ACCEPTED;
+                message = enums.Messages.CORRECT_DATA;
+                roomrepository.save(room).subscribe();
+            } else {
+                message = enums.Messages.REPET_DATA;
+            }
+        }
+
+        return Mono.just(new Response(message, room, status));
+    }
+
+    public Mono<Response> delete(String id) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String message = enums.Messages.INCORRECT_DATA;
+
+        if (roomrepository.existsById(id).block()) {
+            status = HttpStatus.ACCEPTED;
+            message = enums.Messages.DELETE_DATA;
+
+            roomrepository.deleteById(id).subscribe();
+        }
+
+        return Mono.just(new Response(message, null, status));
+    }
+
+    public Mono<Response> changeState(String id) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String message = enums.Messages.INCORRECT_DATA;
+
+        if (roomrepository.existsById(id).block()) {
+            Room room = findByIdroomm(id).block();
+            Boolean state = room.getState();
+            room.setState(!state);
+
             status = HttpStatus.ACCEPTED;
             message = enums.Messages.CORRECT_DATA;
-
-            room = new Room(DTORoom.getName(), DTORoom.getDescription(), DTORoom.getIdtype(), DTORoom.getPrice());
 
             roomrepository.save(room).subscribe();
         }
 
-        return Mono.just(new Response(message, room, status));
+        return Mono.just(new Response(message, null, status));
     }
 }

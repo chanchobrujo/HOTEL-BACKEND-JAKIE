@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -67,6 +68,32 @@ public class RoomController {
 
         return service
             .save(DTORoom)
+            .map(
+                response -> {
+                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+                }
+            )
+            .defaultIfEmpty(ResponseEntity.internalServerError().build());
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/deleteById/{idroomm}")
+    public Mono<ResponseEntity<Map<String, Object>>> daleteById(@PathVariable("idroomm") String idroomm) {
+        return service
+            .delete(idroomm)
+            .map(
+                response -> {
+                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+                }
+            )
+            .defaultIfEmpty(ResponseEntity.internalServerError().build());
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/chancgeState/{idroomm}")
+    public Mono<ResponseEntity<Map<String, Object>>> changeState(@PathVariable("idroomm") String idroomm) {
+        return service
+            .changeState(idroomm)
             .map(
                 response -> {
                     return ResponseEntity.status(response.getStatus()).body(response.getResponse());

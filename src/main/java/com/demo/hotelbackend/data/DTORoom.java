@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DTORoom {
 
+    private String idroom = "";
+
     @NotBlank(message = "El campo nombre no debe estar vacio.")
     private String name;
 
