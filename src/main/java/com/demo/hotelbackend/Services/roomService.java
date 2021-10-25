@@ -39,7 +39,7 @@ public class roomService {
     }
 
     public Mono<Room> findByIdroomm(String idroomm) {
-        return roomrepository.findByIdroomm(idroomm);
+        return roomrepository.findById(idroomm);
     }
 
     public Mono<Room> findByName(String name) {
@@ -54,28 +54,33 @@ public class roomService {
         HttpStatus status = HttpStatus.NOT_FOUND;
         String message = enums.Messages.INCORRECT_DATA;
         Room room = null;
-        if (DTORoom.getIdroom() == null) DTORoom.setIdroom("");
+        if (DTORoom.getIdroom() == null) {
+            DTORoom.setIdroom("");
+        }
 
         if (typeRoomRepository.existsById(DTORoom.getIdtype()).block()) {
-            if (findAll().toStream().filter(u -> u.getName().equals(DTORoom.getName())).count() == 0) {
-                if (!roomrepository.existsById(DTORoom.getIdroom()).block()) {
-                    room =
-                        new Room(DTORoom.getName(), DTORoom.getDescription(), DTORoom.getIdtype(), DTORoom.getPrice());
-                } else {
-                    room =
-                        new Room(
-                            DTORoom.getIdroom(),
-                            DTORoom.getName(),
-                            DTORoom.getDescription(),
-                            DTORoom.getIdtype(),
-                            DTORoom.getPrice()
-                        );
-                }
+            if (!roomrepository.existsById(DTORoom.getIdroom()).block()) {
                 status = HttpStatus.ACCEPTED;
                 message = enums.Messages.CORRECT_DATA;
-                roomrepository.save(room).subscribe();
+                if (findAll().toStream().filter(u -> u.getName().equals(DTORoom.getName())).count() == 0) {
+                    room =
+                        new Room(DTORoom.getName(), DTORoom.getDescription(), DTORoom.getIdtype(), DTORoom.getPrice());
+                    roomrepository.save(room).subscribe();
+                } else {
+                    message = enums.Messages.REPET_DATA;
+                }
             } else {
-                message = enums.Messages.REPET_DATA;
+                status = HttpStatus.ACCEPTED;
+                message = enums.Messages.CORRECT_DATA;
+                room =
+                    new Room(
+                        DTORoom.getIdroom(),
+                        DTORoom.getName(),
+                        DTORoom.getDescription(),
+                        DTORoom.getIdtype(),
+                        DTORoom.getPrice()
+                    );
+                roomrepository.save(room).subscribe();
             }
         }
 

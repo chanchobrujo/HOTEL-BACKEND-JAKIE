@@ -9,6 +9,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -60,24 +62,37 @@ public class HotelBackendApplication extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-            .cors()
-            .and()
-            .csrf()
-            .disable()
-            .authorizeRequests()
-            .antMatchers("/**")
-            .permitAll()
-            .anyRequest()
-            .authenticated()
-            .and()
-            .exceptionHandling()
-            .authenticationEntryPoint(jwtEntryPoint)
-            .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    protected void configure(HttpSecurity http) throws AccessDeniedException {
+        try {
+            http.authorizeRequests().antMatchers(HttpMethod.GET, "/room/").permitAll();
+            http.authorizeRequests().antMatchers(HttpMethod.GET, "/room/findById/{idroomm}").permitAll();
+            http.authorizeRequests().antMatchers(HttpMethod.POST, "/room/save").hasRole("ADMIN");
+            http
+                .authorizeRequests()
+                .antMatchers(HttpMethod.PUT, "/room/changeState/{idroomm}")
+                .hasAnyRole("ADMIN", "RECP");
+            http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/room/deleteById/{idroomm}").hasRole("ADMIN");
+
+            http
+                .cors()
+                .and()
+                .csrf()
+                .disable()
+                .authorizeRequests()
+                .antMatchers("/auth/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtEntryPoint)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
     }
 
     public static void main(String[] args) {

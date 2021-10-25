@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,20 +28,17 @@ public class RoomController {
     @Autowired
     private roomService service;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RECP') or hasRole('ROLE_HUESPED')")
     @GetMapping("/")
     public Mono<ResponseEntity<Flux<Room>>> findByAll() {
         return Mono.just(ResponseEntity.accepted().body(service.findAll()));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RECP') or hasRole('ROLE_HUESPED')")
-    @GetMapping("/{type}")
+    @GetMapping("/findByType/{type}")
     public Mono<ResponseEntity<Flux<Room>>> findByAll(@PathVariable("type") String type) {
         return Mono.just(ResponseEntity.accepted().body(service.findByIdtype(type)));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RECP') or hasRole('ROLE_HUESPED')")
-    @GetMapping("/{idroomm}")
+    @GetMapping("/findById/{idroomm}")
     public Mono<ResponseEntity<Room>> findById(@PathVariable("idroomm") String idroomm) {
         return service
             .findByIdroomm(idroomm)
@@ -50,8 +46,7 @@ public class RoomController {
             .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RECP') or hasRole('ROLE_HUESPED')")
-    @GetMapping("/{name}")
+    @GetMapping("/findByName/{name}")
     public Mono<ResponseEntity<Room>> findByName(@PathVariable("name") String name) {
         return service
             .findByName(name)
@@ -59,7 +54,6 @@ public class RoomController {
             .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/save")
     public Mono<ResponseEntity<Map<String, Object>>> save(
         @RequestBody @Valid DTORoom DTORoom,
@@ -77,7 +71,6 @@ public class RoomController {
             .defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/deleteById/{idroomm}")
     public Mono<ResponseEntity<Map<String, Object>>> daleteById(@PathVariable("idroomm") String idroomm) {
         return service
@@ -90,7 +83,6 @@ public class RoomController {
             .defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/changeState/{idroomm}")
     public Mono<ResponseEntity<Map<String, Object>>> changeState(@PathVariable("idroomm") String idroomm) {
         return service
