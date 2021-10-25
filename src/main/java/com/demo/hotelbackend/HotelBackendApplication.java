@@ -69,13 +69,26 @@ public class HotelBackendApplication extends WebSecurityConfigurerAdapter {
             http.authorizeRequests().antMatchers(HttpMethod.GET, "/room/").permitAll();
             http.authorizeRequests().antMatchers(HttpMethod.GET, "/room/findById/{idroomm}").permitAll();
             http.authorizeRequests().antMatchers(HttpMethod.POST, "/room/save").hasRole("ADMIN");
-            http.authorizeRequests().antMatchers(HttpMethod.PUT, "/room/changeState/{idroomm}").hasAnyRole("ADMIN",
-                    "RECP");
+            http
+                .authorizeRequests()
+                .antMatchers(HttpMethod.PUT, "/room/changeState/{idroomm}")
+                .hasAnyRole("ADMIN", "RECP");
             http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/room/deleteById/{idroomm}").hasRole("ADMIN");
 
-            http.cors().and().csrf().disable().authorizeRequests().anyRequest().authenticated().and()
-                    .exceptionHandling().authenticationEntryPoint(jwtEntryPoint).and().sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            http
+                .cors()
+                .and()
+                .csrf()
+                .disable()
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtEntryPoint)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
             http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         } catch (Exception e) {
             log.info(e.getMessage());
