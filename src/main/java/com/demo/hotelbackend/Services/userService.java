@@ -71,7 +71,7 @@ public class userService {
             .filter(us -> us.getEmail().equals(user.getEmail()) || us.getNumber().equals(user.getNumber()))
             .findFirst();
 
-        if (userfilter.isPresent()) {
+        if (userfilter.isEmpty()) {
             repository.save(user).block();
         } else {
             status = HttpStatus.BAD_REQUEST;
@@ -122,6 +122,7 @@ public class userService {
                     model.getNumber(),
                     model.getEmail(),
                     passwordEncoder.encode(password),
+                    enums.Messages.PHOTO_NULL,
                     roles
                 );
 

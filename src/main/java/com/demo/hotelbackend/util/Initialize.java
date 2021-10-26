@@ -1,13 +1,14 @@
 package com.demo.hotelbackend.util;
 
+import com.demo.hotelbackend.Interface.typeRoomRepository;
+import com.demo.hotelbackend.Interface.userRepository;
 import com.demo.hotelbackend.Model.Collections.TypeRoom;
 import com.demo.hotelbackend.Model.Collections.user;
-import com.demo.hotelbackend.Services.typeRoomService;
-import com.demo.hotelbackend.Services.userService;
 import com.demo.hotelbackend.constants.enums;
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -16,24 +17,27 @@ import org.springframework.stereotype.Component;
 public class Initialize implements CommandLineRunner {
 
     @Autowired
-    private userService userService;
+    private userRepository userRepository;
 
     @Autowired
-    private typeRoomService typeRoomService;
+    private typeRoomRepository typeRoomRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Value("${password}")
+    private String password;
+
     @Override
     public void run(String... args) throws Exception {
-        if (typeRoomService.findAll().toStream().count() == 0) {
-            typeRoomService.save(new TypeRoom("DOBLE"));
-            typeRoomService.save(new TypeRoom("SIMPLE"));
-            typeRoomService.save(new TypeRoom("FAMILIAR"));
-            typeRoomService.save(new TypeRoom("MATRIMONIAL"));
+        if (typeRoomRepository.findAll().toStream().count() == 0) {
+            typeRoomRepository.save(new TypeRoom("DOBLE")).subscribe();
+            typeRoomRepository.save(new TypeRoom("SIMPLE")).subscribe();
+            typeRoomRepository.save(new TypeRoom("FAMILIAR")).subscribe();
+            typeRoomRepository.save(new TypeRoom("MATRIMONIAL")).subscribe();
         }
-
-        if (userService.findAll().toStream().count() == 0) {
+        System.out.print(" GAAAAAAAAAA " + password);
+        if (userRepository.findAll().count().block() == 0) {
             Set<String> roles = new HashSet<>();
             roles.add(enums.ROLE_ADMIN.name());
 
@@ -42,11 +46,12 @@ public class Initialize implements CommandLineRunner {
                 "Picoy Rosas",
                 "941472816",
                 "Jpicoyrosas@gmail.com",
-                passwordEncoder.encode("123456"),
+                passwordEncoder.encode(password),
+                enums.Messages.PHOTO_NULL,
                 roles
             );
             useradmin.setState(true);
-            userService.save(useradmin);
+            userRepository.save(useradmin).subscribe();
         }
     }
 }

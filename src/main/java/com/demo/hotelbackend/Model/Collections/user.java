@@ -23,18 +23,28 @@ public class user {
     private String number;
     private String email;
     private String password;
+    private String photo;
     private Boolean state;
     private Set<String> roles = new HashSet<>();
 
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime datecreated = LocalDateTime.now(ZoneId.of("America/Lima"));
 
-    public user(String firtsname, String lastname, String number, String email, String password, Set<String> roles) {
+    public user(
+        String firtsname,
+        String lastname,
+        String number,
+        String email,
+        String password,
+        String photo,
+        Set<String> roles
+    ) {
         this.firtsname = firtsname;
         this.lastname = lastname;
         this.number = number;
         this.roles = roles;
         this.email = email;
+        this.photo = photo;
         this.password = password;
     }
 }

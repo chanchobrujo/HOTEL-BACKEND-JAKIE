@@ -13,5 +13,7 @@ public enum enums {
         public static final String INVALID_DATA = "Datos inválidos.";
         public static final String DELETE_DATA = "Datos eliminados correctamente.";
         public static final String REPET_DATA = "Datos repetidos.";
+
+        public static final String PHOTO_NULL = "Sin foto.";
     }
 }
