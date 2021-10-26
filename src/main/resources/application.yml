@@ -10,6 +10,6 @@ spring:
 jwt:
   secret: secret
   expiration: 3600
+#Duración de sesión -> 1 hora.
 
 password: 123456
-#Duración de sesión -> 1 hora.
