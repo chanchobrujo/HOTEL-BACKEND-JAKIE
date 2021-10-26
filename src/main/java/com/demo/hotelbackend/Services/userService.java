@@ -4,11 +4,15 @@ import com.demo.hotelbackend.Interface.userRepository;
 import com.demo.hotelbackend.Model.Collections.user;
 import com.demo.hotelbackend.Model.Response;
 import com.demo.hotelbackend.constants.enums;
+import com.demo.hotelbackend.data.DTOInsciption;
 import com.demo.hotelbackend.data.DTOLogin;
 import com.demo.hotelbackend.data.DTOToken;
+import com.demo.hotelbackend.logic.Logic;
 import com.demo.hotelbackend.secure.JwtProvider;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -34,8 +38,8 @@ public class userService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    // @Autowired
-    // private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JwtProvider jwtProvider;
@@ -61,10 +65,20 @@ public class userService {
     public Mono<Response> save(user user) {
         HttpStatus status = HttpStatus.ACCEPTED;
         String message = enums.Messages.CORRECT_DATA;
+        Optional<user> userfilter = repository
+            .findAll()
+            .toStream()
+            .filter(us -> us.getEmail().equals(user.getEmail()) || us.getNumber().equals(user.getNumber()))
+            .findFirst();
 
-        user usersave = repository.save(user).block();
+        if (userfilter.isPresent()) {
+            repository.save(user).block();
+        } else {
+            status = HttpStatus.BAD_REQUEST;
+            message = enums.Messages.REPET_DATA;
+        }
 
-        return Mono.just(new Response(message, usersave, status));
+        return Mono.just(new Response(message, null, status));
     }
 
     public DTOToken authorization(String email, String password) {
@@ -82,6 +96,47 @@ public class userService {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public Mono<Response> inscription(DTOInsciption model) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        String message = enums.Messages.INVALID_DATA;
+
+        String password = Logic.generatedID();
+        String msg = "";
+
+        try {
+            Optional<user> userfilter = repository
+                .findAll()
+                .toStream()
+                .filter(us -> us.getEmail().equals(model.getEmail()) || us.getNumber().equals(model.getNumber()))
+                .findFirst();
+
+            if (userfilter.isEmpty()) {
+                Set<String> roles = new HashSet<>();
+                roles.add(enums.ROLE_HUESPED.toString());
+
+                user customer = new user(
+                    model.getFirtsname(),
+                    model.getLastname(),
+                    model.getNumber(),
+                    model.getEmail(),
+                    passwordEncoder.encode(password),
+                    roles
+                );
+
+                status = HttpStatus.ACCEPTED;
+
+                message = Logic.sendMail(model.getEmail(), "Bienvenido, se le a asignado una contraseña:", password);
+                repository.save(customer).block();
+            } else {
+                status = HttpStatus.BAD_REQUEST;
+                message = enums.Messages.REPET_DATA;
+            }
+        } catch (Exception e) {
+            msg = "Error al enviar mensaje, verifique el correo... " + e.getMessage();
+        }
+        return Mono.just(new Response(message, msg, status));
     }
 
     public Mono<Response> login(DTOLogin login) {

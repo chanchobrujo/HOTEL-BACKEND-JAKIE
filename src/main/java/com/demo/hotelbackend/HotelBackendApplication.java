@@ -65,6 +65,7 @@ public class HotelBackendApplication extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws AccessDeniedException {
         try {
             http.authorizeRequests().antMatchers("/auth/**").permitAll();
+            http.authorizeRequests().antMatchers("/inscription/**").permitAll();
 
             http
                 .authorizeRequests()

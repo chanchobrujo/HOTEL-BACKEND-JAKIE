@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 public class DTOLogin {
 
     @Email
-    @NotBlank(message = "El campo nombre no debe estar vacio.")
+    @NotBlank(message = "El campo email no debe estar vacio.")
     private String username;
 
-    @NotBlank(message = "El campo nombre no debe estar vacio.")
+    @NotBlank(message = "El campo contraseña no debe estar vacio.")
     private String password;
 }
