@@ -24,4 +24,7 @@ public class DTORoom {
 
     @NotBlank(message = "El campo tipo de habitación no debe estar vacio.")
     private String idtype;
+
+    @NotBlank(message = "El campo photo no debe estar vacio.")
+    private String photo;
 }

@@ -54,9 +54,9 @@ public class roomService {
         HttpStatus status = HttpStatus.NOT_FOUND;
         String message = enums.Messages.INCORRECT_DATA;
         Room room = null;
-        if (DTORoom.getIdroom() == null) {
-            DTORoom.setIdroom("");
-        }
+
+        String id = DTORoom.getIdroom() == null ? "" : DTORoom.getIdroom();
+        DTORoom.setIdroom(id);
 
         if (typeRoomRepository.existsById(DTORoom.getIdtype()).block()) {
             if (!roomrepository.existsById(DTORoom.getIdroom()).block()) {
@@ -64,7 +64,13 @@ public class roomService {
                 message = enums.Messages.CORRECT_DATA;
                 if (findAll().toStream().filter(u -> u.getName().equals(DTORoom.getName())).count() == 0) {
                     room =
-                        new Room(DTORoom.getName(), DTORoom.getDescription(), DTORoom.getIdtype(), DTORoom.getPrice());
+                        new Room(
+                            DTORoom.getName(),
+                            DTORoom.getDescription(),
+                            DTORoom.getIdtype(),
+                            DTORoom.getPrice(),
+                            DTORoom.getPhoto()
+                        );
                     roomrepository.save(room).subscribe();
                 } else {
                     message = enums.Messages.REPET_DATA;
@@ -78,7 +84,8 @@ public class roomService {
                         DTORoom.getName(),
                         DTORoom.getDescription(),
                         DTORoom.getIdtype(),
-                        DTORoom.getPrice()
+                        DTORoom.getPrice(),
+                        DTORoom.getPhoto()
                     );
                 roomrepository.save(room).subscribe();
             }
