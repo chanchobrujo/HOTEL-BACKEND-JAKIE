@@ -1,33 +1,39 @@
 package com.demo.hotelbackend.Services;
 
-import com.demo.hotelbackend.Interface.GuestInterface;
-import com.demo.hotelbackend.Interface.ReservationInterface;
+import com.demo.hotelbackend.Interface.GuestRepository;
+import com.demo.hotelbackend.Interface.ReservationRepository;
+import com.demo.hotelbackend.Interface.RoomRepository;
 import com.demo.hotelbackend.Model.Collections.Guest;
 import com.demo.hotelbackend.Model.Collections.Reservation;
 import com.demo.hotelbackend.Model.Collections.Room;
 import com.demo.hotelbackend.Model.Response;
 import com.demo.hotelbackend.constants.enums;
 import com.demo.hotelbackend.data.DTOReservation;
+import com.demo.hotelbackend.data.ResponseReservation;
 import com.demo.hotelbackend.logic.Logic;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Service
 public class reservationService {
 
     @Autowired
-    private ReservationInterface reservationInterface;
+    private ReservationRepository reservationInterface;
 
     @Autowired
-    private GuestInterface guestInterface;
+    private RoomRepository roomRepository;
+
+    @Autowired
+    private GuestRepository guestInterface;
 
     public Mono<ResponseEntity<Map<String, Object>>> BindingResultErrors(BindingResult bindinResult) {
         Response response = new Response(
@@ -44,34 +50,47 @@ public class reservationService {
     }
 
     public Flux<Room> findAvailableRooms(String date1, String date2) {
-        List<String> listIDrooms = findAll()
-            .toStream()
-            .filter(
-                res ->
-                    !(
-                        res.getDate_ini().equals(Logic.convertDate(date1)) ||
-                        res.getDate_end().equals(Logic.convertDate(date2))
-                    )
-            )
-            .map(Reservation::getIdroom)
-            .collect(Collectors.toList());
+        if (Logic.convertDate(date1).before(Logic.convertDate(date2))) {
+            Set<String> listIDrooms = findAll()
+                .toStream()
+                .filter(res -> Logic.verifyCross(date1, date2, res.getDate_ini(), res.getDate_end()))
+                .map(Reservation::getIdroom)
+                .collect(Collectors.toSet());
 
-        listIDrooms.forEach(System.out::println);
-
+            return Flux.fromIterable(
+                roomRepository
+                    .findAll()
+                    .toStream()
+                    .filter(ro -> !listIDrooms.contains(ro.getIdroomm()))
+                    .collect(Collectors.toList())
+            );
+        }
         return null;
     }
 
+    public Mono<Response> CalculateSelectedRoom(String idroom, String date1, String date2) {
+        HttpStatus status = HttpStatus.ACCEPTED;
+        String message = enums.Messages.CORRECT_DATA;
+        int dif = Logic.DifferenceOfDaysBetweenDates(date1, date2);
+        Optional<Room> room = roomRepository
+            .findAll()
+            .toStream()
+            .filter(r -> r.getIdroomm().equals(idroom))
+            .findFirst();
+        Double subtotal = room.get().getPrice() * dif;
+        Double tax = subtotal / 10;
+        Double total = subtotal + tax;
+
+        ResponseReservation resp = new ResponseReservation(date1, dif, subtotal, tax, total);
+        return Mono.just(new Response(message, resp, status));
+    }
+
     public Mono<Response> save(DTOReservation DTOReservation) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        String message = enums.Messages.INCORRECT_DATA;
+        HttpStatus status = HttpStatus.ACCEPTED;
+        String message = enums.Messages.CORRECT_DATA;
 
         String id = DTOReservation.getId() == null ? "" : DTOReservation.getId();
         DTOReservation.setId(id);
-
-        if (!Logic.compareDates(DTOReservation.getDate_ini(), DTOReservation.getEmail())) {
-            message = enums.Messages.ERROR_DATE;
-            return Mono.just(new Response(message, null, status));
-        }
 
         Optional<Guest> guestFil = guestInterface
             .findAll()
@@ -90,6 +109,20 @@ public class reservationService {
             guestInterface.save(guest).subscribe();
         }
 
-        return Mono.just(new Response(message, null, status));
+        Reservation res = new Reservation(
+            Logic.convertDate(DTOReservation.getDate_ini()),
+            Logic.convertDate(DTOReservation.getDate_end()),
+            DTOReservation.getRequirements(),
+            DTOReservation.getDni(),
+            DTOReservation.getIdroom(),
+            DTOReservation.getIduser(),
+            DTOReservation.getSubtotal(),
+            DTOReservation.getTax(),
+            DTOReservation.getTotal()
+        );
+
+        reservationInterface.save(res).subscribe();
+
+        return Mono.just(new Response(message, res, status));
     }
 }

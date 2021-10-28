@@ -52,13 +52,17 @@ public class Logic {
         return (String) UUID.randomUUID().toString().toUpperCase().subSequence(0, 5);
     }
 
-    public static Boolean compareDates(String date1, String date2) {
+    public static Boolean verifyCross(String date1, String date2, Date datein, Date dateend) {
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date _date1 = dateFormat.parse(date1);
-            Date _date2 = dateFormat.parse(date2);
-
-            return _date1.before(_date2);
+            if (
+                (Logic.convertDate(date1).after(datein) && Logic.convertDate(date1).before(dateend)) ||
+                (Logic.convertDate(date1).equals(datein) || Logic.convertDate(date1).equals(dateend)) ||
+                (Logic.convertDate(date1).after(datein) && Logic.convertDate(date1).before(dateend)) ||
+                (Logic.convertDate(date1).equals(datein) || Logic.convertDate(date1).equals(dateend))
+            ) {
+                return true;
+            }
+            return false;
         } catch (Exception e) {
             return false;
         }
@@ -73,5 +77,13 @@ public class Logic {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static int DifferenceOfDaysBetweenDates(String date1, String date2) {
+        Date da1 = Logic.convertDate(date1);
+        Date da2 = Logic.convertDate(date2);
+        int milisecondsByDay = 86400000;
+
+        return (int) ((da2.getTime() - da1.getTime()) / milisecondsByDay);
     }
 }

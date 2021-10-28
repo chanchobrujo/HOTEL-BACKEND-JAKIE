@@ -23,17 +23,39 @@ public class Reservation {
     private String requirements;
     private String dniguest;
     private String idroom;
+    private String iduser;
+
+    private Double subtotal;
+    private Double tax;
+    private Double total;
+
     private Boolean state;
 
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime datecreated = LocalDateTime.now(ZoneId.of("America/Lima"));
 
-    public Reservation(Date date_ini, Date date_end, String requirements, String dniguest, String idroom) {
+    public Reservation(
+        Date date_ini,
+        Date date_end,
+        String requirements,
+        String dniguest,
+        String idroom,
+        String iduser,
+        Double subtotal,
+        Double tax,
+        Double total
+    ) {
         this.date_ini = date_ini;
         this.date_end = date_end;
         this.requirements = requirements;
         this.dniguest = dniguest;
         this.idroom = idroom;
+        this.iduser = iduser;
+
+        this.subtotal = subtotal;
+        this.total = total;
+        this.tax = tax;
+
         this.state = true;
     }
 }

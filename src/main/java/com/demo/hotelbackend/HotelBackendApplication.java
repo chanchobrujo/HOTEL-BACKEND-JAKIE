@@ -67,6 +67,8 @@ public class HotelBackendApplication extends WebSecurityConfigurerAdapter {
             http.authorizeRequests().antMatchers("/auth/**").permitAll();
             http.authorizeRequests().antMatchers("/inscription/**").permitAll();
 
+            http.authorizeRequests().antMatchers("/reservation/**").hasAnyRole("ADMIN", "RECP", "HUESPED");
+
             http
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/findByEmail/{email}")
