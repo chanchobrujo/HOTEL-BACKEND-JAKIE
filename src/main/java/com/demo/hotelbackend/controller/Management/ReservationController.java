@@ -32,12 +32,13 @@ public class ReservationController {
         return Mono.just(ResponseEntity.accepted().body(service.findAll()));
     }
 
-    @GetMapping("/findByAvaliable/{date_in}/{date_en}")
+    @GetMapping("/findByAvaliable/{date_in}/{date_en}/{idtype}")
     public Mono<ResponseEntity<Flux<Room>>> findByAvaliable(
         @PathVariable("date_in") String date_in,
-        @PathVariable("date_en") String date_en
+        @PathVariable("date_en") String date_en,
+        @PathVariable("idtype") String idtype
     ) {
-        return Mono.just(ResponseEntity.accepted().body(service.findAvailableRooms(date_in, date_en)));
+        return Mono.just(ResponseEntity.accepted().body(service.findAvailableRooms(date_in, date_en, idtype)));
     }
 
     @PostMapping("/save")

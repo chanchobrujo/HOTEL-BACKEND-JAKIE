@@ -49,7 +49,7 @@ public class reservationService {
         return reservationInterface.findAll();
     }
 
-    public Flux<Room> findAvailableRooms(String date1, String date2) {
+    public Flux<Room> findAvailableRooms(String date1, String date2, String idtype) {
         if (Logic.convertDate(date1).before(Logic.convertDate(date2))) {
             Set<String> listIDrooms = findAll()
                 .toStream()
@@ -62,6 +62,8 @@ public class reservationService {
                     .findAll()
                     .toStream()
                     .filter(ro -> !listIDrooms.contains(ro.getIdroomm()))
+                    .filter(ro -> ro.getIdtype().equals(idtype))
+                    .filter(ro -> ro.getState())
                     .collect(Collectors.toList())
             );
         }
