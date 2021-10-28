@@ -41,13 +41,10 @@ public class DTOReservation {
     @NotBlank(message = "El campo id de usuario no debe estar vacio.")
     private String iduser;
 
-    @NotBlank(message = "El campo subtotal no debe estar vacio.")
     private Double subtotal;
 
-    @NotBlank(message = "El campo impuesto no debe estar vacio.")
     private Double tax;
 
-    @NotBlank(message = "El campo total no debe estar vacio.")
     private Double total;
 
     private String requirements;
