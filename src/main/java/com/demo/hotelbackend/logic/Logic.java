@@ -1,5 +1,7 @@
 package com.demo.hotelbackend.logic;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 import java.util.UUID;
 import javax.mail.BodyPart;
@@ -48,5 +50,28 @@ public class Logic {
 
     public static String generatedID() {
         return (String) UUID.randomUUID().toString().toUpperCase().subSequence(0, 5);
+    }
+
+    public static Boolean compareDates(String date1, String date2) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date _date1 = dateFormat.parse(date1);
+            Date _date2 = dateFormat.parse(date2);
+
+            return _date1.before(_date2);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static Date convertDate(String date) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date _date1 = dateFormat.parse(date);
+
+            return _date1;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

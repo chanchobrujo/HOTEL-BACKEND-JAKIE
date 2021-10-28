@@ -15,5 +15,7 @@ public enum enums {
         public static final String REPET_DATA = "Datos repetidos.";
 
         public static final String PHOTO_NULL = "Sin foto.";
+        public static final String CROSS_DATE = "Cruce de horarios.";
+        public static final String ERROR_DATE = "La fecha de inicio debe ser menor.";
     }
 }

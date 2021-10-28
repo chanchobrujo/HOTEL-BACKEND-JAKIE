@@ -25,7 +25,8 @@ public class Guest {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime datecreated = LocalDateTime.now(ZoneId.of("America/Lima"));
 
-    public Guest(String firtsname, String lastname, String email, String phone) {
+    public Guest(String dni, String firtsname, String lastname, String email, String phone) {
+        this.dni = dni;
         this.firtsname = firtsname;
         this.lastname = lastname;
         this.email = email;
