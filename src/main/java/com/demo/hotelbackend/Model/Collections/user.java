@@ -46,5 +46,6 @@ public class user {
         this.email = email;
         this.photo = photo;
         this.password = password;
+        this.state = true;
     }
 }

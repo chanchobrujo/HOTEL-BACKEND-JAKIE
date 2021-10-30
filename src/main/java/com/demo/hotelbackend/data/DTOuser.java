@@ -2,6 +2,7 @@ package com.demo.hotelbackend.data;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,9 +12,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DTOuser {
 
+    @NotBlank(message = "El campo nombre no debe estar vacio.")
     private String firtsname;
+
+    @NotBlank(message = "El campo apellido no debe estar vacio.")
     private String lastname;
+
+    @NotBlank(message = "El campo número no debe estar vacio.")
     private String number;
+
+    @NotBlank(message = "El campo email no debe estar vacio.")
     private String email;
+
     private Set<String> roles = new HashSet<>();
 }

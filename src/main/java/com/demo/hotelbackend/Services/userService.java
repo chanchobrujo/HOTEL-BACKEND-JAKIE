@@ -7,6 +7,7 @@ import com.demo.hotelbackend.constants.enums;
 import com.demo.hotelbackend.data.DTOInsciption;
 import com.demo.hotelbackend.data.DTOLogin;
 import com.demo.hotelbackend.data.DTOToken;
+import com.demo.hotelbackend.data.DTOuser;
 import com.demo.hotelbackend.logic.Logic;
 import com.demo.hotelbackend.secure.JwtProvider;
 import java.util.HashSet;
@@ -62,20 +63,40 @@ public class userService {
         return Mono.just(ResponseEntity.internalServerError().body(response.getResponse()));
     }
 
-    public Mono<Response> save(user user) {
+    public Mono<Response> save(DTOuser DTOuser) {
         HttpStatus status = HttpStatus.ACCEPTED;
         String message = enums.Messages.CORRECT_DATA;
         Optional<user> userfilter = repository
             .findAll()
             .toStream()
-            .filter(us -> us.getEmail().equals(user.getEmail()) || us.getNumber().equals(user.getNumber()))
+            .filter(us -> us.getEmail().equals(DTOuser.getEmail()) || us.getNumber().equals(DTOuser.getNumber()))
             .findFirst();
 
-        if (userfilter.isEmpty()) {
-            repository.save(user).block();
-        } else {
+        String password = Logic.generatedID();
+
+        try {
+            if (userfilter.isEmpty()) {
+                Set<String> roles = new HashSet<>();
+                roles.add(enums.ROLE_RECP.toString());
+
+                user user = new user(
+                    DTOuser.getFirtsname(),
+                    DTOuser.getLastname(),
+                    DTOuser.getNumber(),
+                    DTOuser.getEmail(),
+                    passwordEncoder.encode(password),
+                    enums.Messages.PHOTO_NULL,
+                    roles
+                );
+                message = Logic.sendMail(user.getEmail(), "Bienvenido, se le a asignado una contraseña:", password);
+                repository.save(user).block();
+            } else {
+                status = HttpStatus.BAD_REQUEST;
+                message = enums.Messages.REPET_DATA;
+            }
+        } catch (Exception e) {
             status = HttpStatus.BAD_REQUEST;
-            message = enums.Messages.REPET_DATA;
+            message = enums.Messages.INCORRECT_DATA;
         }
 
         return Mono.just(new Response(message, null, status));
@@ -150,7 +171,7 @@ public class userService {
             .findFirst();
         DTOToken jwtDto = authorization(login.getUsername(), login.getPassword());
 
-        if (user.isPresent() && jwtDto != null) {
+        if (user.isPresent() && jwtDto != null && user.get().getState()) {
             status = HttpStatus.ACCEPTED;
             message = enums.Messages.VALID_DATA;
         }
