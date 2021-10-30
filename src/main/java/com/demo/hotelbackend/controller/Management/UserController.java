@@ -27,7 +27,7 @@ public class UserController {
 
     @GetMapping("/findAll")
     public Mono<ResponseEntity<Flux<user>>> findByAll() {
-        return Mono.just(ResponseEntity.accepted().body(userService.findAll()));
+        return Mono.just(ResponseEntity.accepted().body(userService.findAll2()));
     }
 
     @PostMapping("/save")

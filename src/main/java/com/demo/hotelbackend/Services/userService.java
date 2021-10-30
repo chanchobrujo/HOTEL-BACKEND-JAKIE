@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,16 @@ public class userService {
 
     @Autowired
     private JwtProvider jwtProvider;
+
+    public Flux<user> findAll2() {
+        return Flux.fromIterable(
+            repository
+                .findAll()
+                .toStream()
+                .filter(us -> !us.getRoles().contains(enums.ROLE_ADMIN.name()))
+                .collect(Collectors.toList())
+        );
+    }
 
     public Flux<user> findAll() {
         return repository.findAll();
@@ -165,13 +176,14 @@ public class userService {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         String message = enums.Messages.INVALID_DATA;
 
-        Optional<user> user = findAll()
+        Optional<user> user = repository
+            .findAll()
             .toStream()
             .filter(use -> use.getEmail().equals(login.getUsername()))
             .findFirst();
         DTOToken jwtDto = authorization(login.getUsername(), login.getPassword());
 
-        if (user.isPresent() && jwtDto != null && user.get().getState()) {
+        if (user.isPresent() && jwtDto != null) {
             status = HttpStatus.ACCEPTED;
             message = enums.Messages.VALID_DATA;
         }

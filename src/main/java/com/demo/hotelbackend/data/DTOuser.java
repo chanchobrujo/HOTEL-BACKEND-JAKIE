@@ -2,6 +2,7 @@ package com.demo.hotelbackend.data;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class DTOUser {
     @NotBlank(message = "El campo número no debe estar vacio.")
     private String number;
 
+    @Email
     @NotBlank(message = "El campo email no debe estar vacio.")
     private String email;
 
