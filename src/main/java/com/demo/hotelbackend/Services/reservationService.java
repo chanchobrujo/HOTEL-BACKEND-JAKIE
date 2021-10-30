@@ -123,6 +123,16 @@ public class reservationService {
             DTOReservation.getTotal()
         );
 
+        try {
+            Logic.sendMail(
+                DTOReservation.getEmail(),
+                "HOTEL EL VIAJERO.",
+                "Su reservación a sido registrada. " + DTOReservation.getDate_ini()
+            );
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
         reservationInterface.save(res).subscribe();
 
         return Mono.just(new Response(message, res, status));
