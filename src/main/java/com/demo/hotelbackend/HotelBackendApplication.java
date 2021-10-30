@@ -66,15 +66,13 @@ public class HotelBackendApplication extends WebSecurityConfigurerAdapter {
         try {
             http.authorizeRequests().antMatchers("/auth/**").permitAll();
             http.authorizeRequests().antMatchers("/inscription/**").permitAll();
-            http.authorizeRequests().antMatchers("/report/**").permitAll();
 
             http.authorizeRequests().antMatchers("/reservation/**").hasAnyRole("ADMIN", "RECP", "HUESPED");
             http.authorizeRequests().antMatchers("/user/**").hasRole("ADMIN");
+            http.authorizeRequests().antMatchers("/report/**").hasRole("ADMIN");
 
-            http
-                .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/findByEmail/{email}")
-                .hasAnyRole("ADMIN", "RECP", "HUESPED");
+            http.authorizeRequests().antMatchers(HttpMethod.GET, "/findByEmail/{email}").hasAnyRole("ADMIN", "RECP",
+                    "HUESPED");
 
             http.authorizeRequests().antMatchers(HttpMethod.GET, "/typeroom/**").permitAll();
 
@@ -83,26 +81,13 @@ public class HotelBackendApplication extends WebSecurityConfigurerAdapter {
             http.authorizeRequests().antMatchers(HttpMethod.GET, "/room/findByType/{type}").permitAll();
             http.authorizeRequests().antMatchers(HttpMethod.GET, "/room/findByName/{name}").permitAll();
             http.authorizeRequests().antMatchers(HttpMethod.POST, "/room/save").hasRole("ADMIN");
-            http
-                .authorizeRequests()
-                .antMatchers(HttpMethod.PUT, "/room/changeState/{idroomm}")
-                .hasAnyRole("ADMIN", "RECP");
+            http.authorizeRequests().antMatchers(HttpMethod.PUT, "/room/changeState/{idroomm}").hasAnyRole("ADMIN",
+                    "RECP");
             http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/room/deleteById/{idroomm}").hasRole("ADMIN");
 
-            http
-                .cors()
-                .and()
-                .csrf()
-                .disable()
-                .authorizeRequests()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtEntryPoint)
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            http.cors().and().csrf().disable().authorizeRequests().anyRequest().authenticated().and()
+                    .exceptionHandling().authenticationEntryPoint(jwtEntryPoint).and().sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
             http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         } catch (Exception e) {
             log.info(e.getMessage());
