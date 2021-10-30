@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DTOuser {
+public class DTOUser {
 
     @NotBlank(message = "El campo nombre no debe estar vacio.")
     private String firtsname;

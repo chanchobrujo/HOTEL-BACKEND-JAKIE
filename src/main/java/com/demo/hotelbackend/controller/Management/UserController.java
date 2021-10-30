@@ -2,7 +2,7 @@ package com.demo.hotelbackend.controller.Management;
 
 import com.demo.hotelbackend.Model.Collections.user;
 import com.demo.hotelbackend.Services.userService;
-import com.demo.hotelbackend.data.DTOuser;
+import com.demo.hotelbackend.data.DTOUser;
 import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class UserController {
 
     @PostMapping("/save")
     public Mono<ResponseEntity<Map<String, Object>>> save(
-        @RequestBody @Valid DTOuser DTOuser,
+        @RequestBody @Valid DTOUser DTOuser,
         BindingResult bindinResult
     ) {
         if (bindinResult.hasErrors()) return userService.BindingResultErrors(bindinResult);

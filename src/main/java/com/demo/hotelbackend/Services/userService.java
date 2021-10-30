@@ -7,7 +7,7 @@ import com.demo.hotelbackend.constants.enums;
 import com.demo.hotelbackend.data.DTOInsciption;
 import com.demo.hotelbackend.data.DTOLogin;
 import com.demo.hotelbackend.data.DTOToken;
-import com.demo.hotelbackend.data.DTOuser;
+import com.demo.hotelbackend.data.DTOUser;
 import com.demo.hotelbackend.logic.Logic;
 import com.demo.hotelbackend.secure.JwtProvider;
 import java.util.HashSet;
@@ -63,7 +63,7 @@ public class userService {
         return Mono.just(ResponseEntity.internalServerError().body(response.getResponse()));
     }
 
-    public Mono<Response> save(DTOuser DTOuser) {
+    public Mono<Response> save(DTOUser DTOuser) {
         HttpStatus status = HttpStatus.ACCEPTED;
         String message = enums.Messages.CORRECT_DATA;
         Optional<user> userfilter = repository
