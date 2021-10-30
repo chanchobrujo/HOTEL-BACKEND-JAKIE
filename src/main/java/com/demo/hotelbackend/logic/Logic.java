@@ -86,4 +86,10 @@ public class Logic {
 
         return (int) ((da2.getTime() - da1.getTime()) / milisecondsByDay);
     }
+
+    public static int DifferenceOfDaysBetweenDates2(Date date1, Date date2) {
+        int milisecondsByDay = 86400000;
+
+        return (int) ((date1.getTime() - date2.getTime()) / milisecondsByDay);
+    }
 }

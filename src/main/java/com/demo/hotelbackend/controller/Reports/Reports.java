@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/report")
-public class TypeRoomReportController {
+public class Reports {
 
     @Autowired
     private reportService reportService;
@@ -22,6 +22,30 @@ public class TypeRoomReportController {
     public Mono<ResponseEntity<Map<String, Object>>> mostUsedRoomTypes() {
         return reportService
             .mostUsedRoomTypes()
+            .map(
+                response -> {
+                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+                }
+            )
+            .defaultIfEmpty(ResponseEntity.internalServerError().build());
+    }
+
+    @GetMapping("/allReservations")
+    public Mono<ResponseEntity<Map<String, Object>>> totalReservations() {
+        return reportService
+            .totalReservations()
+            .map(
+                response -> {
+                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+                }
+            )
+            .defaultIfEmpty(ResponseEntity.internalServerError().build());
+    }
+
+    @GetMapping("/promReservationsTime")
+    public Mono<ResponseEntity<Map<String, Object>>> promReservationsTime() {
+        return reportService
+            .promReservationsTime()
             .map(
                 response -> {
                     return ResponseEntity.status(response.getStatus()).body(response.getResponse());
