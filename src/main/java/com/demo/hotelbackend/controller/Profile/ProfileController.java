@@ -23,12 +23,10 @@ public class ProfileController {
     public Mono<ResponseEntity<user>> findByName(@PathVariable("email") String email) {
         return service
             .findByEmail(email)
-            .map(
-                mapper -> {
-                    mapper.setPassword(null);
-                    return ResponseEntity.ok().body(mapper);
-                }
-            )
+            .map(mapper -> {
+                mapper.setPassword(null);
+                return ResponseEntity.ok().body(mapper);
+            })
             .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 }

@@ -29,13 +29,12 @@ public class reportService {
         return (int) reservationService
             .findAll()
             .toStream()
-            .filter(
-                res ->
-                    typeRoomService
-                        .findByIdtyperoom(roomService.findByIdroomm(res.getIdroom()).block().getIdtype())
-                        .block()
-                        .getName()
-                        .equals(TYPE)
+            .filter(res ->
+                typeRoomService
+                    .findByIdtyperoom(roomService.findByIdroomm(res.getIdroom()).block().getIdtype())
+                    .block()
+                    .getName()
+                    .equals(TYPE)
             )
             .count();
     }
@@ -75,6 +74,14 @@ public class reportService {
             prom = Logic.DifferenceOfDaysBetweenDates2(list.get(i).getDate_end(), list.get(i).getDate_ini()) + prom;
         }
         prom = prom / list.size();
+
+        return Mono.just(new Response(message, prom, status));
+    }
+
+    public Mono<Response> SeeEarningsSoFar() {
+        HttpStatus status = HttpStatus.ACCEPTED;
+        String message = enums.Messages.CORRECT_DATA;
+        Double prom = reservationService.findAll().toStream().mapToDouble(Reservation::getTotal).sum();
 
         return Mono.just(new Response(message, prom, status));
     }

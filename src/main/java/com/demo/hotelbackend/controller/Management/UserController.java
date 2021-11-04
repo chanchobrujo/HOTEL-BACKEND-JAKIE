@@ -39,11 +39,9 @@ public class UserController {
 
         return userService
             .save(DTOuser)
-            .map(
-                response -> {
-                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
-                }
-            )
+            .map(response -> {
+                return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+            })
             .defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 }
