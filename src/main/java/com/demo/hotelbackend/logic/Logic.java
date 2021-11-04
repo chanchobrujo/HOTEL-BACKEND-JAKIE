@@ -42,7 +42,7 @@ public class Logic {
             transporte.connect(correoEnvia, contrasena);
             transporte.sendMessage(mail, mail.getRecipients(Message.RecipientType.TO));
             transporte.close();
-            return "Correo enviado";
+            return "Se envío password al correo registrado.";
         } catch (Exception e) {
             return e.getMessage();
         }
