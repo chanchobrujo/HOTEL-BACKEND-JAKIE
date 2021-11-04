@@ -2,6 +2,7 @@ package com.demo.hotelbackend.Services;
 
 import com.demo.hotelbackend.Model.Collections.Reservation;
 import com.demo.hotelbackend.Model.Collections.TypeRoom;
+import com.demo.hotelbackend.Model.Collections.user;
 import com.demo.hotelbackend.Model.Response;
 import com.demo.hotelbackend.constants.enums;
 import com.demo.hotelbackend.data.DTOReportsType;
@@ -24,6 +25,9 @@ public class reportService {
 
     @Autowired
     private roomService roomService;
+
+    @Autowired
+    private userService userService;
 
     private int count(String TYPE) {
         return (int) reservationService
@@ -84,5 +88,41 @@ public class reportService {
         Double prom = reservationService.findAll().toStream().mapToDouble(Reservation::getTotal).sum();
 
         return Mono.just(new Response(message, prom, status));
+    }
+
+    public Mono<Response> SeeEarningsByDate(String date1, String date2) {
+        HttpStatus status = HttpStatus.ACCEPTED;
+        String message = enums.Messages.CORRECT_DATA;
+        Double prom = reservationService
+            .findAll()
+            .toStream()
+            .filter(res -> res.getDate_ini().before(Logic.convertDate(date1)))
+            .filter(res -> res.getDate_end().after(Logic.convertDate(date2)))
+            .mapToDouble(Reservation::getTotal)
+            .sum();
+
+        return Mono.just(new Response(message, prom, status));
+    }
+
+    public Mono<Response> UserWithMoreReservations() {
+        HttpStatus status = HttpStatus.ACCEPTED;
+        String message = enums.Messages.CORRECT_DATA;
+        //int size = (int) reservationService.findAll().toStream().count();
+        List<String> idUsers = userService
+            .findAll()
+            .toStream()
+            .filter(user -> !user.getRoles().contains(enums.ROLE_HUESPED.name()))
+            .map(user::getIdaccount)
+            .collect(Collectors.toList());
+
+        System.out.println(
+            reservationService
+                .findAll()
+                .toStream()
+                .map(Reservation::getIduser)
+                .filter(userid -> idUsers.contains(userid))
+                .count()
+        );
+        return Mono.just(new Response(message, 0, status));
     }
 }

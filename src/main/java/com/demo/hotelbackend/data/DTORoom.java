@@ -1,5 +1,6 @@
 package com.demo.hotelbackend.data;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -13,8 +14,9 @@ public class DTORoom {
 
     private String idroom = "";
 
-    @NotBlank(message = "El campo nombre no debe estar vacio.")
-    private String name;
+    @Min(1)
+    @Max(5)
+    private int flat;
 
     @NotBlank(message = "El campo descripción no debe estar vacio.")
     private String description;

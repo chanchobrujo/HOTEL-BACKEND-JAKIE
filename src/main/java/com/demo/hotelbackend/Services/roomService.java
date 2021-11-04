@@ -34,6 +34,17 @@ public class roomService {
         return Mono.just(ResponseEntity.internalServerError().body(response.getResponse()));
     }
 
+    private String defineName(int flat) {
+        String name = "";
+        int count = (int) roomrepository.findAll().toStream().filter(room -> room.getFlat() == flat).count();
+        if (count > 9) {
+            name = flat + "" + count;
+        } else {
+            name = flat + "0" + count;
+        }
+        return name;
+    }
+
     public Flux<Room> findAll() {
         return roomrepository.findAll();
     }
@@ -59,36 +70,18 @@ public class roomService {
         DTORoom.setIdroom(id);
 
         if (typeRoomRepository.existsById(DTORoom.getIdtype()).block()) {
-            if (!roomrepository.existsById(DTORoom.getIdroom()).block()) {
-                status = HttpStatus.ACCEPTED;
-                message = enums.Messages.CORRECT_DATA;
-                if (findAll().toStream().filter(u -> u.getName().equals(DTORoom.getName())).count() == 0) {
-                    room =
-                        new Room(
-                            DTORoom.getName(),
-                            DTORoom.getDescription(),
-                            DTORoom.getIdtype(),
-                            DTORoom.getPrice(),
-                            DTORoom.getPhoto()
-                        );
-                    roomrepository.save(room).subscribe();
-                } else {
-                    message = enums.Messages.REPET_DATA;
-                }
-            } else {
-                status = HttpStatus.ACCEPTED;
-                message = enums.Messages.CORRECT_DATA;
-                room =
-                    new Room(
-                        DTORoom.getIdroom(),
-                        DTORoom.getName(),
-                        DTORoom.getDescription(),
-                        DTORoom.getIdtype(),
-                        DTORoom.getPrice(),
-                        DTORoom.getPhoto()
-                    );
-                roomrepository.save(room).subscribe();
-            }
+            room =
+                new Room(
+                    DTORoom.getFlat(),
+                    DTORoom.getDescription(),
+                    DTORoom.getIdtype(),
+                    DTORoom.getPrice(),
+                    DTORoom.getPhoto()
+                );
+            room.setName(defineName(DTORoom.getFlat()));
+            status = HttpStatus.ACCEPTED;
+            message = enums.Messages.CORRECT_DATA;
+            roomrepository.save(room).subscribe();
         }
 
         return Mono.just(new Response(message, room, status));
