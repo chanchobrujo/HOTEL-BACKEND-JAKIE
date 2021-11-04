@@ -17,13 +17,15 @@ public class TypeRoom {
     private String idtyperoom;
 
     private String name;
+    private int numberGuest;
     private Boolean state;
 
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime datecreated = LocalDateTime.now(ZoneId.of("America/Lima"));
 
-    public TypeRoom(String name) {
+    public TypeRoom(String name, int numberGuest) {
         this.name = name;
+        this.numberGuest = numberGuest;
         this.state = true;
     }
 }

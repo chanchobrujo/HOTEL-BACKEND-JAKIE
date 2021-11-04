@@ -31,10 +31,10 @@ public class Initialize implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (typeRoomRepository.findAll().toStream().count() == 0) {
-            typeRoomRepository.save(new TypeRoom("DOBLE")).subscribe();
-            typeRoomRepository.save(new TypeRoom("SIMPLE")).subscribe();
-            typeRoomRepository.save(new TypeRoom("FAMILIAR")).subscribe();
-            typeRoomRepository.save(new TypeRoom("MATRIMONIAL")).subscribe();
+            typeRoomRepository.save(new TypeRoom("DOBLE", 2)).subscribe();
+            typeRoomRepository.save(new TypeRoom("SIMPLE", 1)).subscribe();
+            typeRoomRepository.save(new TypeRoom("FAMILIAR", 5)).subscribe();
+            typeRoomRepository.save(new TypeRoom("MATRIMONIAL", 2)).subscribe();
         }
         if (userRepository.findAll().count().block() == 0) {
             Set<String> roles = new HashSet<>();
