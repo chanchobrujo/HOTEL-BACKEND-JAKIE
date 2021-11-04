@@ -78,8 +78,10 @@ public class roomService {
                     DTORoom.getPrice(),
                     DTORoom.getPhoto()
                 );
-            room.setName(defineName(DTORoom.getFlat()));
-            if (roomrepository.existsById(DTORoom.getIdroom()).block()) room.setIdroomm(DTORoom.getIdroom());
+
+            if (roomrepository.existsById(DTORoom.getIdroom()).block()) room.setIdroomm(
+                DTORoom.getIdroom()
+            ); else room.setName(defineName(DTORoom.getFlat()));
 
             status = HttpStatus.ACCEPTED;
             message = enums.Messages.CORRECT_DATA;

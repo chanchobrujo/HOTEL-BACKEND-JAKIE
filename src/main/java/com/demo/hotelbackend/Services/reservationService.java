@@ -80,7 +80,7 @@ public class reservationService {
             .filter(r -> r.getIdroomm().equals(idroom))
             .findFirst();
         Double subtotal = room.get().getPrice() * dif;
-        Double tax = subtotal / 10;
+        Double tax = subtotal / 18;
         Double total = subtotal + tax;
 
         ResponseReservation resp = new ResponseReservation(date1, dif, subtotal, tax, total);

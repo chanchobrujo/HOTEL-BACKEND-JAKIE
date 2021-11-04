@@ -14,7 +14,7 @@ public class DTORoom {
 
     private String idroom = "";
 
-    @Min(1)
+    @Min(0)
     @Max(5)
     private int flat;
 

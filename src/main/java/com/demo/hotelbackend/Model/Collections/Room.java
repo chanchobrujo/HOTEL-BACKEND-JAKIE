@@ -22,6 +22,10 @@ public class Room {
     private int flat;
     private String idtype;
     private String photo;
+
+    private int numberGuest;
+    private Boolean children;
+    
     private Boolean state;
 
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
