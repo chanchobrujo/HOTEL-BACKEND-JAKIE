@@ -18,6 +18,7 @@ public class user {
     @Id
     private String idaccount;
 
+    private String dni;
     private String firtsname;
     private String lastname;
     private String number;
@@ -32,6 +33,7 @@ public class user {
 
     public user(
         String firtsname,
+        String dni,
         String lastname,
         String number,
         String email,
@@ -39,6 +41,7 @@ public class user {
         String photo,
         Set<String> roles
     ) {
+        this.dni = dni;
         this.firtsname = firtsname;
         this.lastname = lastname;
         this.number = number;

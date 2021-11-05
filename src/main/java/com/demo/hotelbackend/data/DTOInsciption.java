@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DTOInsciption {
 
+    @NotBlank(message = "El campo dni no debe estar vacio.")
+    private String dni;
+
     @NotBlank(message = "El campo nombre no debe estar vacio.")
     private String firtsname;
 

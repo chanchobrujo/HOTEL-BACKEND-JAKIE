@@ -91,6 +91,7 @@ public class userService {
                 roles.add(enums.ROLE_RECP.toString());
 
                 user user = new user(
+                    DTOuser.getDni(),
                     DTOuser.getFirtsname(),
                     DTOuser.getLastname(),
                     DTOuser.getNumber(),
@@ -149,6 +150,7 @@ public class userService {
                 roles.add(enums.ROLE_HUESPED.toString());
 
                 user customer = new user(
+                    model.getDni(),
                     model.getFirtsname(),
                     model.getLastname(),
                     model.getNumber(),

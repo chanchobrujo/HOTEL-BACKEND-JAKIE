@@ -26,8 +26,10 @@ public class roomService {
 
     public Mono<ResponseEntity<Map<String, Object>>> BindingResultErrors(BindingResult bindinResult) {
         Response response = new Response(
-                bindinResult.getAllErrors().stream().findFirst().get().getDefaultMessage().toString(), null,
-                HttpStatus.NOT_ACCEPTABLE);
+            bindinResult.getAllErrors().stream().findFirst().get().getDefaultMessage().toString(),
+            null,
+            HttpStatus.NOT_ACCEPTABLE
+        );
 
         return Mono.just(ResponseEntity.internalServerError().body(response.getResponse()));
     }
@@ -68,11 +70,16 @@ public class roomService {
         DTORoom.setIdroom(id);
 
         if (typeRoomRepository.existsById(DTORoom.getIdtype()).block()) {
-            room = new Room(DTORoom.getFlat(), DTORoom.getIdtype(), DTORoom.getPrice(), DTORoom.getPhoto(),
-                    DTORoom.getChildren());
+            room =
+                new Room(
+                    DTORoom.getFlat(),
+                    DTORoom.getIdtype(),
+                    DTORoom.getPrice(),
+                    DTORoom.getPhoto(),
+                    DTORoom.getChildren()
+                );
 
-            if (roomrepository.existsById(DTORoom.getIdroom()).block())
-                room.setIdroomm(DTORoom.getIdroom());
+            if (roomrepository.existsById(DTORoom.getIdroom()).block()) room.setIdroomm(DTORoom.getIdroom());
 
             room.setName(defineName(DTORoom.getFlat()));
 

@@ -41,6 +41,7 @@ public class Initialize implements CommandLineRunner {
             roles.add(enums.ROLE_ADMIN.name());
 
             user useradmin = new user(
+                "15975392",
                 "Jackeline",
                 "Picoy Rosas",
                 "941472816",
