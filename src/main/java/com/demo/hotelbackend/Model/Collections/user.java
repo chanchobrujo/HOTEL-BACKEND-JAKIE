@@ -31,16 +31,8 @@ public class user {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime datecreated = LocalDateTime.now(ZoneId.of("America/Lima"));
 
-    public user(
-        String firtsname,
-        String dni,
-        String lastname,
-        String number,
-        String email,
-        String password,
-        String photo,
-        Set<String> roles
-    ) {
+    public user(String dni, String firtsname, String lastname, String number, String email, String password,
+            String photo, Set<String> roles) {
         this.dni = dni;
         this.firtsname = firtsname;
         this.lastname = lastname;
