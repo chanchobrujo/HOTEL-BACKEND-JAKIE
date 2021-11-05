@@ -73,7 +73,6 @@ public class roomService {
             room =
                 new Room(
                     DTORoom.getFlat(),
-                    DTORoom.getDescription(),
                     DTORoom.getIdtype(),
                     DTORoom.getPrice(),
                     DTORoom.getPhoto(),

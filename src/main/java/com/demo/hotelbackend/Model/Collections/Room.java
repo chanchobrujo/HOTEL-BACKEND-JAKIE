@@ -17,7 +17,6 @@ public class Room {
     private String idroomm;
 
     private String name;
-    private String description;
     private Double price;
     private int flat;
     private String idtype;
@@ -28,30 +27,22 @@ public class Room {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime datecreated = LocalDateTime.now(ZoneId.of("America/Lima"));
 
-    public Room(
-        String idroomm,
-        int flat,
-        String description,
-        String idtype,
-        Double price,
-        String photo,
-        Boolean children
-    ) {
+    public Room(String idroomm, int flat, String idtype, Double price, String photo, Boolean children) {
         this.idroomm = idroomm;
         this.flat = flat;
-        this.description = description;
         this.idtype = idtype;
         this.price = price;
         this.photo = photo;
+        this.children = children;
         this.state = true;
     }
 
-    public Room(int flat, String description, String idtype, Double price, String photo, Boolean children) {
+    public Room(int flat, String idtype, Double price, String photo, Boolean children) {
         this.flat = flat;
-        this.description = description;
         this.idtype = idtype;
         this.price = price;
         this.photo = photo;
+        this.children = children;
         this.state = true;
     }
 }

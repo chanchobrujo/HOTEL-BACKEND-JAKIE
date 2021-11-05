@@ -18,9 +18,6 @@ public class DTORoom {
     @Max(5)
     private int flat;
 
-    @NotBlank(message = "El campo descripción no debe estar vacio.")
-    private String description;
-
     @Min(50)
     private Double price;
 
