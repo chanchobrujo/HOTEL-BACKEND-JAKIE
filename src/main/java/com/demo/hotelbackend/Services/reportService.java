@@ -33,12 +33,13 @@ public class reportService {
         return (int) reservationService
             .findAll()
             .toStream()
-            .filter(res ->
-                typeRoomService
-                    .findByIdtyperoom(roomService.findByIdroomm(res.getIdroom()).block().getIdtype())
-                    .block()
-                    .getName()
-                    .equals(TYPE)
+            .filter(
+                res ->
+                    typeRoomService
+                        .findByIdtyperoom(roomService.findByIdroomm(res.getIdroom()).block().getIdtype())
+                        .block()
+                        .getName()
+                        .equals(TYPE)
             )
             .count();
     }

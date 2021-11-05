@@ -17,6 +17,7 @@
 		<java.version>8</java.version>
 	</properties>
 	<dependencies>
+	<!-- reiniciar el servidor cada vez que guardo -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -27,7 +28,7 @@
 			<groupId>javax.xml.bind</groupId> 
 			<artifactId>jaxb-api</artifactId>
 			<version>2.1</version>
-		</dependency>
+		</dependency> 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>

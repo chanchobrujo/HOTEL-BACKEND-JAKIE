@@ -63,9 +63,11 @@ public class RoomController {
 
         return service
             .save(DTORoom)
-            .map(response -> {
-                return ResponseEntity.status(response.getStatus()).body(response.getResponse());
-            })
+            .map(
+                response -> {
+                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+                }
+            )
             .defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 
@@ -73,9 +75,11 @@ public class RoomController {
     public Mono<ResponseEntity<Map<String, Object>>> daleteById(@PathVariable("idroomm") String idroomm) {
         return service
             .delete(idroomm)
-            .map(response -> {
-                return ResponseEntity.status(response.getStatus()).body(response.getResponse());
-            })
+            .map(
+                response -> {
+                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+                }
+            )
             .defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 
@@ -83,9 +87,11 @@ public class RoomController {
     public Mono<ResponseEntity<Map<String, Object>>> changeState(@PathVariable("idroomm") String idroomm) {
         return service
             .changeState(idroomm)
-            .map(response -> {
-                return ResponseEntity.status(response.getStatus()).body(response.getResponse());
-            })
+            .map(
+                response -> {
+                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+                }
+            )
             .defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 }

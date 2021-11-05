@@ -50,9 +50,11 @@ public class ReservationController {
 
         return service
             .save(DTOReservation)
-            .map(response -> {
-                return ResponseEntity.status(response.getStatus()).body(response.getResponse());
-            })
+            .map(
+                response -> {
+                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+                }
+            )
             .defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 
@@ -64,9 +66,11 @@ public class ReservationController {
     ) {
         return service
             .CalculateSelectedRoom(idroom, date1, date2)
-            .map(response -> {
-                return ResponseEntity.status(response.getStatus()).body(response.getResponse());
-            })
+            .map(
+                response -> {
+                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+                }
+            )
             .defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 }

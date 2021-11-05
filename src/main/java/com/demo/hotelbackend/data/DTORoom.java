@@ -29,4 +29,6 @@ public class DTORoom {
 
     @NotBlank(message = "El campo photo no debe estar vacio.")
     private String photo;
+
+    private Boolean children;
 }

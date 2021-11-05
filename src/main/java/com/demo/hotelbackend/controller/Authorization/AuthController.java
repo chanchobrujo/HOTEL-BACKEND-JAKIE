@@ -31,9 +31,11 @@ public class AuthController {
 
         return service
             .login(DTOLogin)
-            .map(mapper -> {
-                return ResponseEntity.status(mapper.getStatus()).body(mapper.getResponse());
-            })
+            .map(
+                mapper -> {
+                    return ResponseEntity.status(mapper.getStatus()).body(mapper.getResponse());
+                }
+            )
             .defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 }

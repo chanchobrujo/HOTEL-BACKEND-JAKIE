@@ -22,9 +22,11 @@ public class Reports {
     public Mono<ResponseEntity<Map<String, Object>>> mostUsedRoomTypes() {
         return reportService
             .mostUsedRoomTypes()
-            .map(response -> {
-                return ResponseEntity.status(response.getStatus()).body(response.getResponse());
-            })
+            .map(
+                response -> {
+                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+                }
+            )
             .defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 
@@ -32,9 +34,11 @@ public class Reports {
     public Mono<ResponseEntity<Map<String, Object>>> totalReservations() {
         return reportService
             .totalReservations()
-            .map(response -> {
-                return ResponseEntity.status(response.getStatus()).body(response.getResponse());
-            })
+            .map(
+                response -> {
+                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+                }
+            )
             .defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 
@@ -42,9 +46,11 @@ public class Reports {
     public Mono<ResponseEntity<Map<String, Object>>> promReservationsTime() {
         return reportService
             .promReservationsTime()
-            .map(response -> {
-                return ResponseEntity.status(response.getStatus()).body(response.getResponse());
-            })
+            .map(
+                response -> {
+                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+                }
+            )
             .defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 }

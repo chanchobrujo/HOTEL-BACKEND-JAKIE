@@ -76,7 +76,8 @@ public class roomService {
                     DTORoom.getDescription(),
                     DTORoom.getIdtype(),
                     DTORoom.getPrice(),
-                    DTORoom.getPhoto()
+                    DTORoom.getPhoto(),
+                    DTORoom.getChildren()
                 );
 
             if (roomrepository.existsById(DTORoom.getIdroom()).block()) room.setIdroomm(
