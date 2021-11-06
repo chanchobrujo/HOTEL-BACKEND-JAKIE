@@ -56,6 +56,10 @@ public class userService {
         );
     }
 
+    public Mono<user> findById(String id) {
+        return repository.findById(id);
+    }
+
     public Flux<user> findAll() {
         return repository.findAll();
     }

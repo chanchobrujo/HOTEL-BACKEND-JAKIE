@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,14 @@ public class UserController {
 
     @Autowired
     private userService userService;
+
+    @GetMapping("/findById/{id}")
+    public Mono<ResponseEntity<user>> findById(@PathVariable("id") String id) {
+        return userService
+            .findById(id)
+            .map(mapper -> ResponseEntity.ok().body(mapper))
+            .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
 
     @GetMapping("/findAll")
     public Mono<ResponseEntity<Flux<user>>> findByAll() {
