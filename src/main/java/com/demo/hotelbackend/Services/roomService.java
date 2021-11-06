@@ -73,7 +73,12 @@ public class roomService {
             room = new Room(DTORoom.getIdtype(), DTORoom.getPrice(), DTORoom.getPhoto(), DTORoom.getChildren());
 
             if (roomrepository.existsById(DTORoom.getIdroom()).block()) {
+                int flat = roomrepository.findById(DTORoom.getIdroom()).block().getFlat();
+                String name = roomrepository.findById(DTORoom.getIdroom()).block().getName();
+
                 room.setIdroomm(DTORoom.getIdroom());
+                room.setFlat(flat);
+                room.setName(name);
             } else {
                 room.setFlat(DTORoom.getFlat());
                 room.setName(defineName(DTORoom.getFlat()));
