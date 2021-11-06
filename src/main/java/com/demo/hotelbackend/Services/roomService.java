@@ -70,18 +70,14 @@ public class roomService {
         DTORoom.setIdroom(id);
 
         if (typeRoomRepository.existsById(DTORoom.getIdtype()).block()) {
-            room =
-                new Room(
-                    DTORoom.getFlat(),
-                    DTORoom.getIdtype(),
-                    DTORoom.getPrice(),
-                    DTORoom.getPhoto(),
-                    DTORoom.getChildren()
-                );
+            room = new Room(DTORoom.getIdtype(), DTORoom.getPrice(), DTORoom.getPhoto(), DTORoom.getChildren());
 
-            if (roomrepository.existsById(DTORoom.getIdroom()).block()) room.setIdroomm(DTORoom.getIdroom());
-
-            room.setName(defineName(DTORoom.getFlat()));
+            if (roomrepository.existsById(DTORoom.getIdroom()).block()) {
+                room.setIdroomm(DTORoom.getIdroom());
+            } else {
+                room.setFlat(DTORoom.getFlat());
+                room.setName(defineName(DTORoom.getFlat()));
+            }
 
             status = HttpStatus.ACCEPTED;
             message = enums.Messages.CORRECT_DATA;
