@@ -90,29 +90,21 @@ public class reportService {
         return Mono.just(new Response(message, res, status));
     }
 
-    public Mono<Response> SeeEarningsSoFar() {
-        HttpStatus status = HttpStatus.ACCEPTED;
-        String message = enums.Messages.CORRECT_DATA;
-        Double prom = reservationService.findAll().toStream().mapToDouble(Reservation::getTotal).sum();
-
-        return Mono.just(new Response(message, prom, status));
-    }
-
     public Mono<Response> SeeEarningsByDate(String date1, String date2) {
         HttpStatus status = HttpStatus.ACCEPTED;
         String message = enums.Messages.CORRECT_DATA;
+
         Double prom = reservationService
             .findAll()
             .toStream()
-            .filter(res -> res.getDate_ini().before(Logic.convertDate(date1)))
-            .filter(res -> res.getDate_end().after(Logic.convertDate(date2)))
+            .filter(res -> res.getDate_ini().after(Logic.convertDate(date1)))
+            .filter(res -> res.getDate_end().before(Logic.convertDate(date2)))
             .mapToDouble(Reservation::getTotal)
             .sum();
-
         return Mono.just(new Response(message, prom, status));
     }
 
-    public Mono<Response> UserWithMoreReservations() {
+    public Mono<Response> UserWithMoreReservations(String rol) {
         HttpStatus status = HttpStatus.ACCEPTED;
         String message = enums.Messages.CORRECT_DATA;
 
@@ -121,7 +113,7 @@ public class reportService {
         userService
             .findAll()
             .toStream()
-            .filter(user -> !user.getRoles().contains(enums.ROLE_HUESPED.name()))
+            .filter(user -> user.getRoles().contains(rol))
             .map(user::getIdaccount)
             .forEach(
                 idUser -> {
@@ -139,6 +131,6 @@ public class reportService {
             .stream()
             .sorted(Comparator.comparing(DTOReportsUserMax::getCant))
             .collect(Collectors.toList());
-        return Mono.just(new Response(message, ListDTOReportsUserMax.stream().findFirst(), status));
+        return Mono.just(new Response(message, ListDTOReportsUserMax.stream().findFirst().orElseGet(null), status));
     }
 }
