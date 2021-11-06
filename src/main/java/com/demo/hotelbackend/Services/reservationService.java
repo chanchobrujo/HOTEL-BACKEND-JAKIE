@@ -33,6 +33,9 @@ public class reservationService {
     private RoomRepository roomRepository;
 
     @Autowired
+    private typeRoomService typeRoomService;
+
+    @Autowired
     private GuestRepository guestInterface;
 
     public Mono<ResponseEntity<Map<String, Object>>> BindingResultErrors(BindingResult bindinResult) {
@@ -49,7 +52,7 @@ public class reservationService {
         return reservationInterface.findAll();
     }
 
-    public Flux<Room> findAvailableRooms(String date1, String date2, String idtype) {
+    public Flux<Room> findAvailableRooms(String date1, String date2, int nguest, boolean ischildren) {
         if (Logic.convertDate(date1).before(Logic.convertDate(date2))) {
             Set<String> listIDrooms = findAll()
                 .toStream()
@@ -62,7 +65,8 @@ public class reservationService {
                     .findAll()
                     .toStream()
                     .filter(ro -> !listIDrooms.contains(ro.getIdroomm()))
-                    .filter(ro -> ro.getIdtype().equals(idtype))
+                    .filter(ro -> ro.getChildren().equals(ischildren))
+                    .filter(ro -> typeRoomService.findByIdtyperoom(ro.getIdtype()).block().getNumberGuest() >= nguest)
                     .filter(ro -> ro.getState())
                     .collect(Collectors.toList())
             );
