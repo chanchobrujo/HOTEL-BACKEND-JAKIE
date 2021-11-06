@@ -53,4 +53,16 @@ public class Reports {
             )
             .defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
+
+    @GetMapping("/UserWithMoreReservations")
+    public Mono<ResponseEntity<Map<String, Object>>> UserWithMoreReservations() {
+        return reportService
+            .UserWithMoreReservations()
+            .map(
+                response -> {
+                    return ResponseEntity.status(response.getStatus()).body(response.getResponse());
+                }
+            )
+            .defaultIfEmpty(ResponseEntity.internalServerError().build());
+    }
 }

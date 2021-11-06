@@ -1,4 +1,4 @@
-package com.demo.hotelbackend.data;
+package com.demo.hotelbackend.data.Reports;
 
 import java.util.ArrayList;
 import java.util.List;

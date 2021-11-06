@@ -5,8 +5,11 @@ import com.demo.hotelbackend.Model.Collections.TypeRoom;
 import com.demo.hotelbackend.Model.Collections.user;
 import com.demo.hotelbackend.Model.Response;
 import com.demo.hotelbackend.constants.enums;
-import com.demo.hotelbackend.data.DTOReportsType;
+import com.demo.hotelbackend.data.Reports.DTOReportsType;
+import com.demo.hotelbackend.data.Reports.DTOReportsUserMax;
 import com.demo.hotelbackend.logic.Logic;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,14 +76,18 @@ public class reportService {
         String message = enums.Messages.CORRECT_DATA;
 
         List<Reservation> list = reservationService.findAll().toStream().collect(Collectors.toList());
-        Double prom = 0.0;
+        Double prom[] = { 0.0 };
 
-        for (int i = 0; i < list.size(); i++) {
-            prom = Logic.DifferenceOfDaysBetweenDates2(list.get(i).getDate_end(), list.get(i).getDate_ini()) + prom;
-        }
-        prom = prom / list.size();
+        list
+            .stream()
+            .forEach(
+                f -> {
+                    prom[0] += Logic.DifferenceOfDaysBetweenDates2(f.getDate_end(), f.getDate_ini());
+                }
+            );
+        double res = prom[0].doubleValue() / list.size();
 
-        return Mono.just(new Response(message, prom, status));
+        return Mono.just(new Response(message, res, status));
     }
 
     public Mono<Response> SeeEarningsSoFar() {
@@ -108,22 +115,30 @@ public class reportService {
     public Mono<Response> UserWithMoreReservations() {
         HttpStatus status = HttpStatus.ACCEPTED;
         String message = enums.Messages.CORRECT_DATA;
-        //int size = (int) reservationService.findAll().toStream().count();
-        List<String> idUsers = userService
+
+        List<DTOReportsUserMax> ListDTOReportsUserMax = new ArrayList<>();
+
+        userService
             .findAll()
             .toStream()
             .filter(user -> !user.getRoles().contains(enums.ROLE_HUESPED.name()))
             .map(user::getIdaccount)
-            .collect(Collectors.toList());
+            .forEach(
+                idUser -> {
+                    int cant = (int) reservationService
+                        .findAll()
+                        .toStream()
+                        .map(Reservation::getIduser)
+                        .filter(userid -> idUser.equals(userid))
+                        .count();
+                    ListDTOReportsUserMax.add(new DTOReportsUserMax(idUser, cant));
+                }
+            );
 
-        System.out.println(
-            reservationService
-                .findAll()
-                .toStream()
-                .map(Reservation::getIduser)
-                .filter(userid -> idUsers.contains(userid))
-                .count()
-        );
-        return Mono.just(new Response(message, 0, status));
+        ListDTOReportsUserMax
+            .stream()
+            .sorted(Comparator.comparing(DTOReportsUserMax::getCant))
+            .collect(Collectors.toList());
+        return Mono.just(new Response(message, ListDTOReportsUserMax.stream().findFirst(), status));
     }
 }
