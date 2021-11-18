@@ -56,6 +56,6 @@ public class Reservation {
         this.total = total;
         this.tax = tax;
 
-        this.state = true;
+        this.state = false;
     }
 }

@@ -24,6 +24,11 @@ public class Response {
         this.body = body;
     }
 
+    public Response(String message, HttpStatus status) {
+        this.message = message;
+        this.status = status;
+    }
+
     public Map<String, Object> getResponse() {
         Map<String, Object> response = new HashMap<>();
 

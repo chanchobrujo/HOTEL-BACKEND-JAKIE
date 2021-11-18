@@ -131,7 +131,7 @@ public class reservationService {
             Logic.sendMail(
                 DTOReservation.getEmail(),
                 "HOTEL EL VIAJERO.",
-                "Su reservación a sido registrada. " + DTOReservation.getDate_ini()
+                "Su reservación a sido registrada, a espera de ser aceptada " + DTOReservation.getDate_ini()
             );
         } catch (Exception e) {
             // TODO: handle exception
@@ -140,5 +140,23 @@ public class reservationService {
         reservationInterface.save(res).subscribe();
 
         return Mono.just(new Response(message, res, status));
+    }
+
+    public Mono<Response> changeState(String id) {
+        HttpStatus status = HttpStatus.ACCEPTED;
+        String message = enums.Messages.CORRECT_DATA;
+
+        Mono<Reservation> res = reservationInterface.findById(id);
+
+        if (res.block() != null) {
+            Boolean state = res.block().getState();
+            res.block().setState(!state);
+            reservationInterface.save(res.block()).subscribe();
+        } else {
+            status = HttpStatus.NOT_FOUND;
+            message = enums.Messages.INVALID_DATA;
+        }
+
+        return Mono.just(new Response(message, status));
     }
 }
