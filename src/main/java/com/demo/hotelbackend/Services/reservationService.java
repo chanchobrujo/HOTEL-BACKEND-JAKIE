@@ -12,6 +12,8 @@ import com.demo.hotelbackend.constants.enums;
 import com.demo.hotelbackend.data.DTOReservation;
 import com.demo.hotelbackend.data.ResponseReservation;
 import com.demo.hotelbackend.logic.Logic;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -53,7 +55,20 @@ public class reservationService {
     }
 
     public Flux<Reservation> findAll() {
-        return reservationInterface.findAll();
+        List<Reservation> list = reservationInterface.findAll().toStream().collect(Collectors.toList());
+        list.sort(
+            new Comparator<Reservation>() {
+                @Override
+                public int compare(Reservation o1, Reservation o2) {
+                    try {
+                        return o2.getDatecreated().compareTo(o1.getDatecreated());
+                    } catch (Exception e) {
+                        return -1;
+                    }
+                }
+            }
+        );
+        return Flux.fromIterable(list);
     }
 
     public Flux<Room> findAvailableRooms(String date1, String date2, int nguest, boolean ischildren) {
@@ -148,17 +163,15 @@ public class reservationService {
 
     public Mono<Response> changeState(String id) {
         HttpStatus status = HttpStatus.ACCEPTED;
-        String message = enums.Messages.CORRECT_DATA;
+        String message = enums.Messages.UPDATE_DATA;
         String mssg = "Su reserva a sido aceptada.";
 
-        Mono<Reservation> res = reservationInterface.findById(id);
+        if (reservationInterface.findById(id).block() != null) {
+            Reservation res = reservationInterface.findById(id).block();
+            Boolean state = res.getState();
+            String email = userRepository.findById(res.getIduser()).block().getEmail();
 
-        if (res.block() != null) {
-            Boolean state = res.block().getState();
-            String email = userRepository.findById(res.block().getIduser()).block().getEmail();
-
-            res.block().setState(!state);
-            reservationInterface.save(res.block()).subscribe();
+            res.setState(!state);
 
             if (state) mssg = "Su cita a sido cancelada.";
             try {
@@ -166,6 +179,7 @@ public class reservationService {
             } catch (Exception e) {
                 // TODO: handle exception
             }
+            reservationInterface.save(res).subscribe();
         } else {
             status = HttpStatus.NOT_FOUND;
             message = enums.Messages.INVALID_DATA;

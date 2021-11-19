@@ -9,6 +9,7 @@ public enum enums {
 
         public static final String VALID_DATA = "Datos validados correctamente.";
         public static final String CORRECT_DATA = "Datos registrados correctamente.";
+        public static final String UPDATE_DATA = "Datos actualizados correctamente.";
         public static final String INCORRECT_DATA = "Datos incorrectos.";
         public static final String INVALID_DATA = "Datos inválidos.";
         public static final String DELETE_DATA = "Datos eliminados correctamente.";
