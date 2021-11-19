@@ -3,6 +3,7 @@ package com.demo.hotelbackend.Services;
 import com.demo.hotelbackend.Interface.GuestRepository;
 import com.demo.hotelbackend.Interface.ReservationRepository;
 import com.demo.hotelbackend.Interface.RoomRepository;
+import com.demo.hotelbackend.Interface.userRepository;
 import com.demo.hotelbackend.Model.Collections.Guest;
 import com.demo.hotelbackend.Model.Collections.Reservation;
 import com.demo.hotelbackend.Model.Collections.Room;
@@ -37,6 +38,9 @@ public class reservationService {
 
     @Autowired
     private GuestRepository guestInterface;
+
+    @Autowired
+    private userRepository userRepository;
 
     public Mono<ResponseEntity<Map<String, Object>>> BindingResultErrors(BindingResult bindinResult) {
         Response response = new Response(
@@ -145,13 +149,23 @@ public class reservationService {
     public Mono<Response> changeState(String id) {
         HttpStatus status = HttpStatus.ACCEPTED;
         String message = enums.Messages.CORRECT_DATA;
+        String mssg = "Su reserva a sido aceptada.";
 
         Mono<Reservation> res = reservationInterface.findById(id);
 
         if (res.block() != null) {
             Boolean state = res.block().getState();
+            String email = userRepository.findById(res.block().getIduser()).block().getEmail();
+
             res.block().setState(!state);
             reservationInterface.save(res.block()).subscribe();
+
+            if (state) mssg = "Su cita a sido cancelada.";
+            try {
+                Logic.sendMail(email, "HOTEL EL VIAJERO.", mssg);
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
         } else {
             status = HttpStatus.NOT_FOUND;
             message = enums.Messages.INVALID_DATA;
