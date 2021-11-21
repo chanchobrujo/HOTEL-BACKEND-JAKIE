@@ -196,4 +196,24 @@ public class userService {
 
         return Mono.just(new Response(message, jwtDto, status));
     }
+
+    public Mono<Response> changeState(String id) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        String message = enums.Messages.INVALID_DATA;
+
+        user user = repository.findById(id).block();
+
+        try {
+            Boolean state = user.getState();
+            user.setState(!state);
+            repository.save(user);
+
+            status = HttpStatus.ACCEPTED;
+            message = enums.Messages.UPDATE_DATA;
+        } catch (Exception e) {
+            System.out.println(" -" + e.getMessage());
+        }
+
+        return Mono.just(new Response(message, status));
+    }
 }
