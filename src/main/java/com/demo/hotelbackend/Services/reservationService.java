@@ -72,25 +72,31 @@ public class reservationService {
     }
 
     public Flux<Room> findAvailableRooms(String date1, String date2, int nguest, boolean ischildren) {
-        if (Logic.convertDate(date1).before(Logic.convertDate(date2))) {
-            Set<String> listIDrooms = findAll()
-                .toStream()
-                .filter(res -> Logic.verifyCross(date1, date2, res.getDate_ini(), res.getDate_end()))
-                .map(Reservation::getIdroom)
-                .collect(Collectors.toSet());
-
-            return Flux.fromIterable(
-                roomRepository
-                    .findAll()
+        try {
+            if (Logic.convertDate(date1).before(Logic.convertDate(date2))) {
+                Set<String> listIDrooms = findAll()
                     .toStream()
-                    .filter(ro -> !listIDrooms.contains(ro.getIdroomm()))
-                    .filter(ro -> ro.getChildren().equals(ischildren))
-                    .filter(ro -> typeRoomService.findByIdtyperoom(ro.getIdtype()).block().getNumberGuest() >= nguest)
-                    .filter(ro -> ro.getState())
-                    .collect(Collectors.toList())
-            );
+                    .filter(res -> Logic.verifyCross(date1, date2, res.getDate_ini(), res.getDate_end()))
+                    .map(Reservation::getIdroom)
+                    .collect(Collectors.toSet());
+
+                return Flux.fromIterable(
+                    roomRepository
+                        .findAll()
+                        .toStream()
+                        .filter(ro -> !listIDrooms.contains(ro.getIdroomm()))
+                        .filter(ro -> ro.getChildren().equals(ischildren))
+                        .filter(
+                            ro -> typeRoomService.findByIdtyperoom(ro.getIdtype()).block().getNumberGuest() >= nguest
+                        )
+                        .filter(ro -> ro.getState())
+                        .collect(Collectors.toList())
+                );
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
         }
-        return null;
     }
 
     public Mono<Response> CalculateSelectedRoom(String idroom, String date1, String date2) {
