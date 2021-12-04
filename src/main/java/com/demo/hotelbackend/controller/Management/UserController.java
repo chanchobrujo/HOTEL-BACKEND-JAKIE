@@ -1,6 +1,6 @@
 package com.demo.hotelbackend.controller.Management;
 
-import com.demo.hotelbackend.Model.Collections.user;
+import com.demo.hotelbackend.Model.Collections.User;
 import com.demo.hotelbackend.Services.userService;
 import com.demo.hotelbackend.data.DTOUser;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class UserController {
     private userService userService;
 
     @GetMapping("/findById/{id}")
-    public Mono<ResponseEntity<user>> findById(@PathVariable("id") String id) {
+    public Mono<ResponseEntity<User>> findById(@PathVariable("id") String id) {
         return userService
             .findById(id)
             .map(mapper -> ResponseEntity.ok().body(mapper))
@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/findAll")
-    public Mono<ResponseEntity<Flux<user>>> findByAll() {
+    public Mono<ResponseEntity<Flux<User>>> findByAll() {
         return Mono.just(ResponseEntity.accepted().body(userService.findAll2()));
     }
 

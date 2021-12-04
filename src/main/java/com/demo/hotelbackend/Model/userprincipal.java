@@ -1,6 +1,6 @@
 package com.demo.hotelbackend.Model;
 
-import com.demo.hotelbackend.Model.Collections.user;
+import com.demo.hotelbackend.Model.Collections.User;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +27,7 @@ public class userprincipal implements UserDetails {
         this.password = password;
     }
 
-    public static userprincipal build(user user) {
+    public static userprincipal build(User user) {
         List<GrantedAuthority> authorities = user
             .getRoles()
             .stream()

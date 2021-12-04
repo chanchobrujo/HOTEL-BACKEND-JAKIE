@@ -2,7 +2,7 @@ package com.demo.hotelbackend.Services;
 
 import com.demo.hotelbackend.Model.Collections.Reservation;
 import com.demo.hotelbackend.Model.Collections.TypeRoom;
-import com.demo.hotelbackend.Model.Collections.user;
+import com.demo.hotelbackend.Model.Collections.User;
 import com.demo.hotelbackend.Model.Response;
 import com.demo.hotelbackend.constants.enums;
 import com.demo.hotelbackend.data.Reports.DTOReportsType;
@@ -114,7 +114,7 @@ public class reportService {
             .findAll()
             .toStream()
             .filter(user -> user.getRoles().contains(rol))
-            .map(user::getIdaccount)
+            .map(User::getIdaccount)
             .forEach(
                 idUser -> {
                     int cant = (int) reservationService

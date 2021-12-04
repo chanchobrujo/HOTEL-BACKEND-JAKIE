@@ -1,7 +1,7 @@
 package com.demo.hotelbackend.Services;
 
 import com.demo.hotelbackend.Interface.userRepository;
-import com.demo.hotelbackend.Model.Collections.user;
+import com.demo.hotelbackend.Model.Collections.User;
 import com.demo.hotelbackend.Model.Response;
 import com.demo.hotelbackend.constants.enums;
 import com.demo.hotelbackend.data.DTOInsciption;
@@ -46,7 +46,7 @@ public class userService {
     @Autowired
     private JwtProvider jwtProvider;
 
-    public Flux<user> findAll2() {
+    public Flux<User> findAll2() {
         return Flux.fromIterable(
             repository
                 .findAll()
@@ -56,15 +56,15 @@ public class userService {
         );
     }
 
-    public Mono<user> findById(String id) {
+    public Mono<User> findById(String id) {
         return repository.findById(id);
     }
 
-    public Flux<user> findAll() {
+    public Flux<User> findAll() {
         return repository.findAll();
     }
 
-    public Mono<user> findByEmail(String email) {
+    public Mono<User> findByEmail(String email) {
         return repository.findByEmail(email);
     }
 
@@ -81,7 +81,7 @@ public class userService {
     public Mono<Response> save(DTOUser DTOuser) {
         HttpStatus status = HttpStatus.ACCEPTED;
         String message = enums.Messages.CORRECT_DATA;
-        Optional<user> userfilter = repository
+        Optional<User> userfilter = repository
             .findAll()
             .toStream()
             .filter(us -> us.getEmail().equals(DTOuser.getEmail()) || us.getNumber().equals(DTOuser.getNumber()))
@@ -94,7 +94,7 @@ public class userService {
                 Set<String> roles = new HashSet<>();
                 roles.add(enums.ROLE_RECP.toString());
 
-                user user = new user(
+                User user = new User(
                     DTOuser.getDni(),
                     DTOuser.getFirtsname(),
                     DTOuser.getLastname(),
@@ -143,7 +143,7 @@ public class userService {
         String msg = "";
 
         try {
-            Optional<user> userfilter = repository
+            Optional<User> userfilter = repository
                 .findAll()
                 .toStream()
                 .filter(us -> us.getEmail().equals(model.getEmail()) || us.getNumber().equals(model.getNumber()))
@@ -153,7 +153,7 @@ public class userService {
                 Set<String> roles = new HashSet<>();
                 roles.add(enums.ROLE_HUESPED.toString());
 
-                user customer = new user(
+                User customer = new User(
                     model.getDni(),
                     model.getFirtsname(),
                     model.getLastname(),
@@ -182,7 +182,7 @@ public class userService {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         String message = enums.Messages.INVALID_DATA;
 
-        Optional<user> user = repository
+        Optional<User> user = repository
             .findAll()
             .toStream()
             .filter(use -> use.getEmail().equals(login.getUsername()))
@@ -201,7 +201,7 @@ public class userService {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         String message = enums.Messages.INVALID_DATA;
 
-        user user = repository.findById(id).block();
+        User user = repository.findById(id).block();
 
         try {
             Boolean state = user.getState();

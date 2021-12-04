@@ -1,6 +1,6 @@
 package com.demo.hotelbackend.controller.Profile;
 
-import com.demo.hotelbackend.Model.Collections.user;
+import com.demo.hotelbackend.Model.Collections.User;
 import com.demo.hotelbackend.Services.userService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class ProfileController {
     private userService service;
 
     @GetMapping("/findByEmail/{email}")
-    public Mono<ResponseEntity<user>> findByName(@PathVariable("email") String email) {
+    public Mono<ResponseEntity<User>> findByName(@PathVariable("email") String email) {
         return service
             .findByEmail(email)
             .map(

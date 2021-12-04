@@ -3,7 +3,7 @@ package com.demo.hotelbackend.util;
 import com.demo.hotelbackend.Interface.typeRoomRepository;
 import com.demo.hotelbackend.Interface.userRepository;
 import com.demo.hotelbackend.Model.Collections.TypeRoom;
-import com.demo.hotelbackend.Model.Collections.user;
+import com.demo.hotelbackend.Model.Collections.User;
 import com.demo.hotelbackend.constants.enums;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,7 +40,7 @@ public class Initialize implements CommandLineRunner {
             Set<String> roles = new HashSet<>();
             roles.add(enums.ROLE_ADMIN.name());
 
-            user useradmin = new user(
+            User useradmin = new User(
                 "15975392",
                 "Jackeline",
                 "Picoy Rosas",
