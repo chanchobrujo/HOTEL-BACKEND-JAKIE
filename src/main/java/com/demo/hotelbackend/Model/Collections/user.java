@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @NoArgsConstructor
-@Document(collection = "user")
+@Document(collection = "User")
 public class User {
 
     @Id
@@ -31,16 +31,14 @@ public class User {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime datecreated = LocalDateTime.now(ZoneId.of("America/Lima"));
 
-    public User(
-        String dni,
-        String firtsname,
-        String lastname,
-        String number,
-        String email,
-        String password,
-        String photo,
-        Set<String> roles
-    ) {
+    public User(String dni,
+            String firtsname,
+            String lastname,
+            String number,
+            String email,
+            String password,
+            String photo,
+            Set<String> roles) {
         this.dni = dni;
         this.firtsname = firtsname;
         this.lastname = lastname;
